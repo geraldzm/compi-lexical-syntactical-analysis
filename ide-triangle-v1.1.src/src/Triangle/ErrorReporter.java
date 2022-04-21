@@ -25,7 +25,7 @@ public class ErrorReporter {
   }
 
   public void reportError(String message, String tokenName, SourcePosition pos) {
-    System.out.print ("ERROR: ");
+    System.out.print ("ERROR : ");
 
     for (int p = 0; p < message.length(); p++)
     if (message.charAt(p) == '%')

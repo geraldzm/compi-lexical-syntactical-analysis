@@ -102,6 +102,7 @@ public final class Scanner {
       takeIt();
       while (isLetter(currentChar) || isDigit(currentChar))
         takeIt();
+      
       return Token.IDENTIFIER;
 
     case '0':  case '1':  case '2':  case '3':  case '4':
@@ -206,7 +207,9 @@ public final class Scanner {
     kind = scanToken();
 
     pos.finish = sourceFile.getCurrentLine();
+    
     tok = new Token(kind, currentSpelling.toString(), pos);
+    
     if (debug)
       System.out.println(tok);
     return tok;

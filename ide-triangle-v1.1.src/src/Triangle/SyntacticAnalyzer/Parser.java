@@ -255,7 +255,7 @@ public class Parser {
 
     start(commandPos);
     commandAST = parseSingleCommand();
-    while (currentToken.kind == Token.SEMICOLON) {
+    while (currentToken.kind == Token.SEMICOLON || currentToken.kind == Token.NOTHING) {
       acceptIt();
       Command c2AST = parseSingleCommand();
       finish(commandPos);
@@ -333,13 +333,19 @@ public class Parser {
         commandAST = new WhileCommand(eAST, cAST, commandPos);
       }
       break;
-
+      
+    // Cambio Leonardo Farina
+    // A�adimos NOTHING
+    case Token.NOTHING: 
+        
     case Token.SEMICOLON:
     case Token.END:
     case Token.ELSE:
     case Token.IN:
     case Token.EOT:
 
+      //System.out.println("AHORA PASA: " + Token.toKind(currentToken));
+      //System.out.println("AHORA PASA: " + Token.spell(35));
       finish(commandPos);
       commandAST = new EmptyCommand(commandPos);
       break;
@@ -673,6 +679,7 @@ public class Parser {
       }
       break;
 
+      
     default:
       syntacticError("\"%\" cannot start a declaration",
         currentToken.spelling);
