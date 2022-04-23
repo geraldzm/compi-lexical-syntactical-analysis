@@ -37,6 +37,7 @@ import Core.ExampleFileFilter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import Core.Visitors.TreeVisitor;
+import Triangle.GenerateHTML;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -591,6 +592,11 @@ public class Main extends javax.swing.JFrame {
                     sr += (char)br.read();
                 br.close();
                 addInternalFrame(chooser.getSelectedFile().getPath(), sr.replace("\r\n", "\n")).setPreviouslySaved(true);
+                
+                //Cambios por LEONARDO FARINA
+                //Nos llevamos el nombre del directorio actual
+                GenerateHTML.SetDirectory(chooser.getSelectedFile().getPath());
+                
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "An error occurred while trying to open the specified file", "Error", JOptionPane.ERROR_MESSAGE);
             }
