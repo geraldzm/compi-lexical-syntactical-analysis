@@ -70,30 +70,30 @@ final class Token extends Object {
 
     // reserved words - must be in alphabetical order...
     ARRAY		= 4,
-    BEGIN		= 5,
-    CONST		= 6,
-    DO			= 7,
+    CONST		= 5,
+    DO			= 6,
+    ELIF		= 7,
     ELSE		= 8,
     END			= 9,
     FUNC		= 10,
     IF			= 11,
     IN			= 12,
-    LET			= 13,     
-    NOTHING		= 14, // Agregamos NOTHING   Leonardo Farina   
+    LET			= 13,
+    NOTHING		= 14, // Agregamos NOTHING   Leonardo Farina
     OF			= 15,
     PROC		= 16,
     RECORD		= 17,
     THEN		= 18,
     TYPE		= 19,
     VAR			= 20,
-    WHILE		= 21,
+    WHILE		= 21 ,
 
       
   
     // punctuation...
     DOT			= 22,
     COLON		= 23,
-    SEMICOLON           = 24,
+    SEMICOLON   = 24,
     COMMA		= 25,
     BECOMES		= 26,
     IS			= 27,
@@ -111,16 +111,15 @@ final class Token extends Object {
     ERROR		= 35;
           
 
-
   private static String[] tokenTable = new String[] {
     "<int>",
     "<char>",
     "<identifier>",
     "<operator>",
     "array",
-    "begin",
     "const",
     "do",
+    "elif", // Cambio Gerald Zamora
     "else",
     "end",
     "func",

@@ -293,20 +293,21 @@ public class Parser {
       }
       break;
 
-    case Token.BEGIN:
-      acceptIt();
-      commandAST = parseCommand();
-      accept(Token.END);
-      break;
+//    case Token.BEGIN:
+//      acceptIt();
+//      commandAST = parseCommand();
+//      accept(Token.END);
+//      break;
 
     case Token.LET:
       {
+        // Cambio stephanie
         acceptIt();
-        Declaration dAST = parseDeclaration();
+        parseDeclaration();
         accept(Token.IN);
-        Command cAST = parseSingleCommand();
+        commandAST = parseCommand();
         finish(commandPos);
-        commandAST = new LetCommand(dAST, cAST, commandPos);
+        accept(Token.END);
       }
       break;
 
@@ -316,8 +317,10 @@ public class Parser {
         Expression eAST = parseExpression();
         accept(Token.THEN);
         Command c1AST = parseSingleCommand();
+
         accept(Token.ELSE);
         Command c2AST = parseSingleCommand();
+
         finish(commandPos);
         commandAST = new IfCommand(eAST, c1AST, c2AST, commandPos);
       }
@@ -335,8 +338,7 @@ public class Parser {
       break;
       
     // Cambio Leonardo Farina
-    // A�adimos NOTHING
-    case Token.NOTHING: 
+    case Token.NOTHING:
         
     case Token.SEMICOLON:
     case Token.END:
