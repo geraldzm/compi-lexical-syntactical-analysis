@@ -18,8 +18,6 @@ import java.lang.*;
  * @author Leonardo
  */
 public class GenerateHTML {
-
-
         public static String nameFile;
         
         public GenerateHTML(String html) {
@@ -34,7 +32,14 @@ public class GenerateHTML {
                 ind++;
             }
             //System.out.println(nameFile.substring(bar,nameFile.length()-4));
-            nameFile = nameFile.substring(bar,nameFile.length()-4);            
+            nameFile = nameFile.substring(bar,nameFile.length()-4); 
+            
+            
+            
+            
+            
+            
+            
             try {
                 String ruta = nameFile+".html";
                 String contenido = html;

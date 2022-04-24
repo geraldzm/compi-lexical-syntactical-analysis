@@ -3,6 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/1°%20Semestre%202022/Compiladores%20E%20Interpretes%20GR%201/Proyecto/compi-lexical-syntactical-analysis/ide-triangle-v1.1.src/src/Triangle/SyntacticAnalyzer/Scanner.java</file>
+            <file>file:/D:/1°%20Semestre%202022/Compiladores%20E%20Interpretes%20GR%201/Proyecto/compi-lexical-syntactical-analysis/ide-triangle-v1.1.src/src/Core/Visitors/TableVisitor.java</file>
+            <file>file:/D:/1°%20Semestre%202022/Compiladores%20E%20Interpretes%20GR%201/Proyecto/compi-lexical-syntactical-analysis/ide-triangle-v1.1.src/src/Triangle/GenerateHTML.java</file>
+            <file>file:/D:/1°%20Semestre%202022/Compiladores%20E%20Interpretes%20GR%201/Proyecto/compi-lexical-syntactical-analysis/ide-triangle-v1.1.src/src/Core/Visitors/TreeVisitor.java</file>
+            <file>file:/D:/1°%20Semestre%202022/Compiladores%20E%20Interpretes%20GR%201/Proyecto/compi-lexical-syntactical-analysis/ide-triangle-v1.1.src/src/Triangle/GenerateXML.java</file>
+            <file>file:/D:/1°%20Semestre%202022/Compiladores%20E%20Interpretes%20GR%201/Proyecto/compi-lexical-syntactical-analysis/ide-triangle-v1.1.src/src/Triangle/SyntacticAnalyzer/Token.java</file>
+            <file>file:/D:/1°%20Semestre%202022/Compiladores%20E%20Interpretes%20GR%201/Proyecto/compi-lexical-syntactical-analysis/ide-triangle-v1.1.src/src/Triangle/TreeDrawer/LayoutVisitor.java</file>
+        </group>
     </open-files>
 </project-private>

@@ -68,6 +68,8 @@ import Triangle.AbstractSyntaxTrees.VarFormalParameter;
 import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.AbstractSyntaxTrees.VnameExpression;
 import Triangle.AbstractSyntaxTrees.WhileCommand;
+import Triangle.GenerateHTML;
+import Triangle.Writer;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -356,6 +358,9 @@ public class TreeVisitor implements Visitor {
     }
     
     public Object visitProgram(Program ast, Object obj) {
+        // Leonardo
+        Writer xml = new Writer(GenerateHTML.nameFile+".xml");
+        xml.write(ast);
         return(createUnary("Program", ast.C));
     }
     // </editor-fold>

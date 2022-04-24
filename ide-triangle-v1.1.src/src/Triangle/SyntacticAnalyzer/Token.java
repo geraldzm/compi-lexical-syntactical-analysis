@@ -58,6 +58,10 @@ final class Token extends Object {
       ", position=" + position;
   }
 
+    public String getSpell() {
+    return spelling;
+  }
+    
   // Token classes...
 
   public static final int

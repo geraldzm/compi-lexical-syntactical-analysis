@@ -20,6 +20,7 @@ import Triangle.GenerateHTML;
 public final class Scanner {
 
    // Leonardo
+  public GenerateHTML cs;
   private Integer checkHTML;  
   private String completeHTML = "";  
   
@@ -292,7 +293,7 @@ public final class Scanner {
    
   // Leonardo
    public void prin() {
-    GenerateHTML cs = new GenerateHTML(completeHTML);
+    cs = new GenerateHTML(completeHTML);
   }
 
 }
