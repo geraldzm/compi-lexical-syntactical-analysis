@@ -1,0 +1,10 @@
+let
+var i: Integer;
+var j: Integer
+in
+for i from (num == j) .. (j == i)
+do 
+num := j+i;
+end;
+
+end 

@@ -75,9 +75,9 @@ final class Token extends Object {
     ELIF		= 7,  
     ELSE		= 8,
     END			= 9,
-    FUNC		= 10,
-    FOR                 = 11, //Agregamos FOR Stephanie Quiros
-    FROM                = 12, //Agregamos FROM Stephanie Quiros
+    FOR                 = 10, //Agregamos FOR Stephanie Quiros
+    FROM                = 11, //Agregamos FROM Stephanie Quiros
+    FUNC		= 12,
     IF			= 13,
     IN			= 14,
     LEAVE		= 15, //Agregamos LEAVE Gerald
@@ -128,9 +128,9 @@ final class Token extends Object {
     "elif", // Cambio Gerald Zamora
     "else",
     "end",
-    "func",
     "for", //Agregamos for Stephanie Quiros
     "from", //Agregamos from Stephanie Quiros
+    "func",
     "if",
     "in",
     "leave",

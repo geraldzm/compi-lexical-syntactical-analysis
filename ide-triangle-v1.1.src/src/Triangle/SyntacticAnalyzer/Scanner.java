@@ -160,6 +160,10 @@ public final class Scanner {
 
     case '.':
       takeIt();
+      if(currentChar == '.'){
+          takeIt();
+          return Token.DOUBLEDOT;
+      }
       return Token.DOT;
 
     case ':':

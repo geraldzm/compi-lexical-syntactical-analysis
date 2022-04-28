@@ -39,7 +39,7 @@ public class Parser {
       previousTokenPosition = currentToken.position;
       currentToken = lexicalAnalyser.scan();
     } else {
-      syntacticError("\"%\" expected here", Token.spell(tokenExpected));
+      syntacticError("\"%\" expected here", Token.spell(tokenExpected) +" recibi:" +currentToken.toString());
     }
   }
     void acceptRepeat (int tokenExpected) throws SyntaxError {
@@ -218,10 +218,8 @@ public class Parser {
 
   Command parseSingleCommand() throws SyntaxError {
     Command commandAST = null; // in case there's a syntactic error
-
     SourcePosition commandPos = new SourcePosition();
     start(commandPos);
-    System.out.println("entre con: " + currentToken.spelling);
     switch (currentToken.kind) {
 
     case Token.IDENTIFIER:
@@ -297,7 +295,6 @@ public class Parser {
         if(currentToken.kind == Token.WHILE || currentToken.kind == Token.UNTIL){
 
             acceptIt();
-            System.out.println("entre en while con " + currentToken.spelling + " " + commandPos);
             Expression eAST = parseExpression();
             accept(Token.DO);
             Command cAST = parseCommand();
@@ -314,7 +311,6 @@ public class Parser {
          }
         else if (currentToken.kind == Token.DO ){
             acceptIt();
-            //System.out.println("entre en while con " + currentToken.spelling + " " + commandPos);
             Command cAST = parseCommand();
             acceptDo(currentToken.kind);
             Expression eAST = parseExpression();
@@ -336,11 +332,8 @@ public class Parser {
     {
         acceptIt();
         parseIdentifier();
-        System.out.println("pase identifier");
         accept(Token.FROM);
-        System.out.println("entre en for1 con " + currentToken.spelling + " " + commandPos);
         parseExpression();
-        System.out.println("entre en for con " + currentToken.spelling + " " + commandPos);
         accept(Token.DOUBLEDOT);
         parseExpression();
         acceptRepeat(currentToken.kind);
@@ -349,7 +342,6 @@ public class Parser {
         if(currentToken.kind == Token.WHILE || currentToken.kind == Token.UNTIL){
 
             acceptIt();
-            //System.out.println("entre en while con " + currentToken.spelling + " " + commandPos);
             Expression eAST = parseExpression();
             accept(Token.DO);
             Command cAST = parseCommand();
@@ -366,7 +358,6 @@ public class Parser {
          }
         else if (currentToken.kind == Token.DO ){
             acceptIt();
-            //System.out.println("entre en while con " + currentToken.spelling + " " + commandPos);
             Command cAST = parseCommand();
             
             if(currentToken.kind == Token.LEAVE) {
