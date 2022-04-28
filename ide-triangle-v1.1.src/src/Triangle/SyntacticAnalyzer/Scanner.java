@@ -14,9 +14,15 @@
 
 package Triangle.SyntacticAnalyzer;
 
+import Triangle.GenerateHTML;
+
 
 public final class Scanner {
 
+   // Leonardo
+  private Integer checkHTML;  
+  private String completeHTML = "";  
+  
   private SourceFile sourceFile;
   private boolean debug;
 
@@ -69,17 +75,40 @@ public final class Scanner {
     switch (currentChar) {
     case '!':
       {
+        completeHTML += "<b style=\"color:#5EFE68; font-weight: normal;\">" + currentChar;  
         takeIt();
-        while ((currentChar != SourceFile.EOL) && (currentChar != SourceFile.EOT))
+        while ((currentChar != SourceFile.EOL) && (currentChar != SourceFile.EOT)){
           takeIt();
+          completeHTML += currentChar;
+        }
         if (currentChar == SourceFile.EOL)
+            completeHTML += "<br>";  
           takeIt();
       }
       break;
 
-    case ' ': case '\n': case '\r': case '\t':
+    case ' ': {
+        completeHTML += "&nbsp;";
       takeIt();
       break;
+    }
+    
+    case '\n':{
+      completeHTML += "<br>";  
+      takeIt();
+      break;
+    }
+    
+    case '\r': {    
+      takeIt();
+      break;
+    }
+    
+    case '\t':{
+      completeHTML += "&ensp;";
+      takeIt();
+      break;
+    }
     }
   }
 
@@ -187,6 +216,29 @@ public final class Scanner {
   }
 
   public Token scan () {
+    // Leonardo 
+    
+    if (checkHTML == null){
+        checkHTML = 1;
+        completeHTML += "<!DOCTYPE html>\n" +
+"                        <html lang=\"es\">\n" +
+"                        <head>\n" +
+"                          <meta charset=\"utf-8\">\n" +
+"                          <title>Proyecto 1</title>\n" +
+"                        </head>                        \n" +
+"                        <style>\n" +
+"                           p {\n" +
+"                               font-size: 1em;\n" +
+"                               font-family: \"Roboto\", monospaced;\n" +
+"                           }\n" +
+"                        </style>\n" +
+"                        <body>\n" +
+"                        ";
+        completeHTML +="<p>";
+       // prin();  
+    }
+    
+    
     Token tok;
     SourcePosition pos;
     int kind;
@@ -212,7 +264,35 @@ public final class Scanner {
     
     if (debug)
       System.out.println(tok);
+    // Leonardo
+    addHTML(tok.kind,tok.spelling);
     return tok;
+  }
+ 
+    // Leonardo
+   public void addHTML(Integer typeTok, String name) {
+    
+    if (typeTok < 2 ){
+        completeHTML += "<b style=\"color:#0013B8; font-weight: normal;\">"+name;
+    }
+    else if (typeTok <= 21 && typeTok >= 4){
+        completeHTML += "<b style=\"color:black; font-weight: bold;\">"+name;
+    }
+    else{
+        completeHTML += "<b style=\"color:black; font-weight: normal;\">"+name;
+    }
+    
+    if(34 == typeTok){
+        completeHTML +="</p>"
+                + "                        </body>\n" 
+                + "                        </html>";
+        prin();
+    }
+  }
+   
+  // Leonardo
+   public void prin() {
+    GenerateHTML cs = new GenerateHTML(completeHTML);
   }
 
 }

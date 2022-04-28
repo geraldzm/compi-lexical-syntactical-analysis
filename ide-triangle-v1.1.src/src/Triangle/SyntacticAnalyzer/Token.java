@@ -70,47 +70,52 @@ final class Token extends Object {
 
     // reserved words - must be in alphabetical order...
     ARRAY		= 4,
-    BEGIN		= 5,
-    CONST		= 6,
-    DO			= 7,
+    CONST		= 5,
+    DO			= 6,
+    ELIF		= 7,  
     ELSE		= 8,
     END			= 9,
     FUNC		= 10,
-    IF			= 11,
-    IN			= 12,
-    LET			= 13,     
-    NOTHING		= 14, // Agregamos NOTHING   Leonardo Farina   
-    OF			= 15,
-    PROC		= 16,
-    RECORD		= 17,
-    THEN		= 18,
-    TYPE		= 19,
-    VAR			= 20,
-    WHILE		= 21,
+    FOR                 = 11, //Agregamos FOR Stephanie Quiros
+    FROM                = 12, //Agregamos FROM Stephanie Quiros
+    IF			= 13,
+    IN			= 14,
+    LEAVE		= 15, //Agregamos LEAVE Gerald
+    LET			= 16,
+    NOTHING		= 17, // Agregamos NOTHING   Leonardo Farina
+    OF			= 18,
+    PROC		= 19,
+    RECORD		= 20,
+    REPEAT              = 21, //Agregamos REPEAT Stephanie Quiros
+    THEN		= 22,
+    TYPE		= 23,
+    UNTIL               = 24, //Agregamos UNTIL Stephanie Quiros
+    VAR			= 25,
+    WHILE		= 26,
 
       
   
     // punctuation...
-    DOT			= 22,
-    COLON		= 23,
-    SEMICOLON           = 24,
-    COMMA		= 25,
-    BECOMES		= 26,
-    IS			= 27,
+    DOT			= 27,
+    COLON		= 28,
+    SEMICOLON           = 29,
+    COMMA		= 30,
+    BECOMES		= 31,
+    IS			= 32,
+    DOUBLEDOT           = 33, //Agregamos DOUBLEDOT Stephanie Quiros
 
     // brackets...
-    LPAREN		= 28,
-    RPAREN		= 29,
-    LBRACKET            = 30,
-    RBRACKET            = 31,
-    LCURLY		= 32,
-    RCURLY		= 33,
+    LPAREN		= 34,
+    RPAREN		= 35,
+    LBRACKET            = 36,
+    RBRACKET            = 37,
+    LCURLY		= 38,
+    RCURLY		= 39,
 
     // special tokens...
-    EOT			= 34,
-    ERROR		= 35;
+    EOT			= 40,
+    ERROR		= 41;
           
-
 
   private static String[] tokenTable = new String[] {
     "<int>",
@@ -118,21 +123,26 @@ final class Token extends Object {
     "<identifier>",
     "<operator>",
     "array",
-    "begin",
     "const",
     "do",
+    "elif", // Cambio Gerald Zamora
     "else",
     "end",
     "func",
+    "for", //Agregamos for Stephanie Quiros
+    "from", //Agregamos from Stephanie Quiros
     "if",
     "in",
+    "leave",
     "let",
     "nothing", // Cambio Leonardo Farina agragamos "nothing"
     "of",
     "proc",
     "record",
+    "repeat", //Agregamos repeat Stephanie Quiros
     "then",
     "type",
+    "until", //Agregamos until Stephanie Quiros
     "var",
     "while",
     ".",
@@ -141,6 +151,7 @@ final class Token extends Object {
     ",",
     ":=",
     "~",
+    "..", //Agregamos .. Stephanie Quiros
     "(",
     ")",
     "[",
