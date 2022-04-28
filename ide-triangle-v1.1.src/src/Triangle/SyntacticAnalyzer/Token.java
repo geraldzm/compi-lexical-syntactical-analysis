@@ -78,37 +78,38 @@ final class Token extends Object {
     FUNC		= 10,
     IF			= 11,
     IN			= 12,
-    LET			= 13,
-    NOTHING		= 14, // Agregamos NOTHING   Leonardo Farina
-    OF			= 15,
-    PROC		= 16,
-    RECORD		= 17,
-    THEN		= 18,
-    TYPE		= 19,
-    VAR			= 20,
-    WHILE		= 21 ,
+    LEAVE			= 13,
+    LET			= 14,
+    NOTHING		= 15, // Agregamos NOTHING   Leonardo Farina
+    OF			= 16,
+    PROC		= 17,
+    RECORD		= 18,
+    THEN		= 19,
+    TYPE		= 20,
+    VAR			= 21,
+    WHILE		= 22 ,
 
       
   
     // punctuation...
-    DOT			= 22,
-    COLON		= 23,
-    SEMICOLON   = 24,
-    COMMA		= 25,
-    BECOMES		= 26,
-    IS			= 27,
+    DOT			= 23,
+    COLON		= 24,
+    SEMICOLON   = 25,
+    COMMA		= 26,
+    BECOMES		= 27,
+    IS			= 28,
 
     // brackets...
-    LPAREN		= 28,
-    RPAREN		= 29,
-    LBRACKET            = 30,
-    RBRACKET            = 31,
-    LCURLY		= 32,
-    RCURLY		= 33,
+    LPAREN		= 29,
+    RPAREN		= 30,
+    LBRACKET    = 31,
+    RBRACKET    = 32,
+    LCURLY		= 33,
+    RCURLY		= 34,
 
     // special tokens...
-    EOT			= 34,
-    ERROR		= 35;
+    EOT			= 35,
+    ERROR		= 36;
           
 
   private static String[] tokenTable = new String[] {
@@ -125,6 +126,7 @@ final class Token extends Object {
     "func",
     "if",
     "in",
+    "leave",
     "let",
     "nothing", // Cambio Leonardo Farina agragamos "nothing"
     "of",

@@ -31,5 +31,5 @@ public class IfCommand extends Command {
   }
 
   public Expression E;
-  public Command C1, C2;
+  public Command C1, C2, C3;
 }
