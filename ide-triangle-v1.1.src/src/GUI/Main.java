@@ -43,7 +43,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * The Main class. Contains the main form.
  *
- * @author Luis Leopoldo Pï¿½rez <luiperpe@ns.isi.ulatina.ac.cr>
+ * @author Luis Leopoldo Pérez <luiperpe@ns.isi.ulatina.ac.cr>
  */
 public class Main extends javax.swing.JFrame {
 
@@ -591,12 +591,7 @@ public class Main extends javax.swing.JFrame {
                 while (br.ready())
                     sr += (char)br.read();
                 br.close();
-                addInternalFrame(chooser.getSelectedFile().getPath(), sr.replace("\r\n", "\n")).setPreviouslySaved(true);
-                
-                //Cambios por LEONARDO FARINA
-                //Nos llevamos el nombre del directorio actual
-                GenerateHTML.SetDirectory(chooser.getSelectedFile().getPath());
-                
+                addInternalFrame(chooser.getSelectedFile().getPath(), sr.replace("\r\n", "\n")).setPreviouslySaved(true);                
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "An error occurred while trying to open the specified file", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -619,6 +614,10 @@ public class Main extends javax.swing.JFrame {
             ((FileFrame)desktopPane.getSelectedFrame()).clearTable();
             new File(desktopPane.getSelectedFrame().getTitle().replace(".tri", ".tam")).delete();
             
+            //Cambios por LEONARDO FARINA
+            //Nos llevamos el nombre del directorio actual
+            GenerateHTML.SetDirectory(desktopPane.getSelectedFrame().getTitle().replace(".tri", ""));
+            
             output.setDelegate(delegateConsole);            
             if (compiler.compileProgram(desktopPane.getSelectedFrame().getTitle())) {           
                 output.setDelegate(delegateTAMCode);
@@ -626,8 +625,8 @@ public class Main extends javax.swing.JFrame {
                 ((FileFrame)desktopPane.getSelectedFrame()).setTree((DefaultMutableTreeNode)treeVisitor.visitProgram(compiler.getAST(), null));
                 //((FileFrame)desktopPane.getSelectedFrame()).setTable(tableVisitor.getTable(compiler.getAST()));
                 
-                //runMenuItem.setEnabled(true);
-                //buttonRun.setEnabled(true);
+                runMenuItem.setEnabled(false);
+                buttonRun.setEnabled(false);
             } else {
                 ((FileFrame)desktopPane.getSelectedFrame()).highlightError(compiler.getErrorPosition());
                 runMenuItem.setEnabled(false);

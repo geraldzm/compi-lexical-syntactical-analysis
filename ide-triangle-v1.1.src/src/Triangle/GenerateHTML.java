@@ -16,31 +16,12 @@ import java.lang.*;
 /**
  *
  * @author Leonardo
+ * Ayuda: https://decodigo.com/java-crear-archivos-de-texto
  */
 public class GenerateHTML {
         public static String nameFile;
         
         public GenerateHTML(String html) {
-            if(nameFile == null){
-                String caracter = "\\";
-                String[] name = nameFile.split("");
-                Integer ind = 0;
-                Integer bar = 0;
-                while(ind < nameFile.length()){
-                    if( name[ind].equals("\\")){
-                        bar = ind+1;
-                    }
-                    ind++;
-                }
-                //System.out.println(nameFile.substring(bar,nameFile.length()-4));
-                nameFile = nameFile.substring(bar,nameFile.length()-4); 
-            }
-            
-            
-            
-            
-            
-            
             try {
                 String ruta = nameFile+".html";
                 String contenido = html;
