@@ -1,5 +1,0 @@
-begin
-	! Test of if in command, it runs correctly.	
-	if true then puteol() else put('x');
-	
-end 
