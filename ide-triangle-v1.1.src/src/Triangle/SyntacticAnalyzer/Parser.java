@@ -207,7 +207,7 @@ public class Parser {
 
     start(commandPos);
     commandAST = parseSingleCommand();
-    while (currentToken.kind == Token.SEMICOLON || currentToken.kind == Token.NOTHING) {
+    while (currentToken.kind == Token.SEMICOLON) {
       acceptIt();
       Command c2AST = parseSingleCommand();
       finish(commandPos);
@@ -377,6 +377,12 @@ public class Parser {
       
     // Cambio Leonardo Farina
     case Token.NOTHING:
+      {
+        acceptIt();
+        finish(commandPos);
+        commandAST = new EmptyCommand(commandPos);
+      }
+      break;
     case Token.DOUBLEDOT:
     case Token.FROM:
     case Token.DO:

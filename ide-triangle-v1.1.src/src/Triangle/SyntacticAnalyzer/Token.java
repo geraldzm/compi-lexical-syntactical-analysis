@@ -70,51 +70,53 @@ final class Token extends Object {
 
     // reserved words - must be in alphabetical order...
     ARRAY		= 4,
-    CONST		= 5,
-    DO			= 6,
-    ELIF		= 7,  
-    ELSE		= 8,
-    END			= 9,
-    FOR                 = 10, //Agregamos FOR Stephanie Quiros
-    FROM                = 11, //Agregamos FROM Stephanie Quiros
-    FUNC		= 12,
-    IF			= 13,
-    IN			= 14,
-    LEAVE		= 15, //Agregamos LEAVE Gerald
-    LET			= 16,
-    NOTHING		= 17, // Agregamos NOTHING   Leonardo Farina
-    OF			= 18,
-    PROC		= 19,
-    RECORD		= 20,
-    REPEAT              = 21, //Agregamos REPEAT Stephanie Quiros
-    THEN		= 22,
-    TYPE		= 23,
-    UNTIL               = 24, //Agregamos UNTIL Stephanie Quiros
-    VAR			= 25,
-    WHILE		= 26,
+    CASE                = 5,
+    CONST		= 6,
+    DO			= 7,
+    ELIF		= 8,  
+    ELSE		= 9,
+    END			= 10,
+    FOR                 = 11, //Agregamos FOR Stephanie Quiros
+    FROM                = 12, //Agregamos FROM Stephanie Quiros
+    FUNC		= 13,
+    IF			= 14,
+    IN			= 15,
+    LEAVE		= 16, //Agregamos LEAVE Gerald
+    LET			= 17,
+    NOTHING		= 18, // Agregamos NOTHING   Leonardo Farina
+    OF			= 19,
+    PROC		= 20,
+    RECORD		= 21,
+    REPEAT              = 22, //Agregamos REPEAT Stephanie Quiros
+    THEN		= 23,
+    TYPE		= 24,
+    UNTIL               = 25, //Agregamos UNTIL Stephanie Quiros
+    VAR			= 26,
+    WHEN                = 27,
+    WHILE		= 28,
 
       
   
     // punctuation...
-    DOT			= 27,
-    COLON		= 28,
-    SEMICOLON           = 29,
-    COMMA		= 30,
-    BECOMES		= 31,
-    IS			= 32,
-    DOUBLEDOT           = 33, //Agregamos DOUBLEDOT Stephanie Quiros
+    DOT			= 29,
+    COLON		= 30,
+    SEMICOLON           = 31,
+    COMMA		= 32,
+    BECOMES		= 33,
+    IS			= 34,
+    DOUBLEDOT           = 35, //Agregamos DOUBLEDOT Stephanie Quiros
 
     // brackets...
-    LPAREN		= 34,
-    RPAREN		= 35,
-    LBRACKET            = 36,
-    RBRACKET            = 37,
-    LCURLY		= 38,
-    RCURLY		= 39,
+    LPAREN		= 36,
+    RPAREN		= 37,
+    LBRACKET            = 38,
+    RBRACKET            = 39,
+    LCURLY		= 40,
+    RCURLY		= 41,
 
     // special tokens...
-    EOT			= 40,
-    ERROR		= 41;
+    EOT			= 42,
+    ERROR		= 43;
           
 
   private static String[] tokenTable = new String[] {
@@ -123,6 +125,7 @@ final class Token extends Object {
     "<identifier>",
     "<operator>",
     "array",
+    "case",
     "const",
     "do",
     "elif", // Cambio Gerald Zamora
@@ -144,6 +147,7 @@ final class Token extends Object {
     "type",
     "until", //Agregamos until Stephanie Quiros
     "var",
+    "when",
     "while",
     ".",
     ":",

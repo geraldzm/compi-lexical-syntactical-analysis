@@ -20,6 +20,7 @@ import Triangle.GenerateHTML;
 public final class Scanner {
 
    // Leonardo
+  public GenerateHTML cs;
   private Integer checkHTML;  
   private String completeHTML = "";  
   
@@ -160,10 +161,6 @@ public final class Scanner {
 
     case '.':
       takeIt();
-      if(currentChar == '.'){
-          takeIt();
-          return Token.DOUBLEDOT;
-      }
       return Token.DOT;
 
     case ':':
@@ -286,17 +283,18 @@ public final class Scanner {
         completeHTML += "<b style=\"color:black; font-weight: normal;\">"+name;
     }
     
-    if(34 == typeTok){
-        completeHTML +="</p>"
-                + "                        </body>\n" 
-                + "                        </html>";
-        prin();
-    }
+
+    String auxHTML = completeHTML;
+    auxHTML +="</p>"
+            + "                        </body>\n" 
+            + "                        </html>";
+    prin(auxHTML);
+    
   }
    
   // Leonardo
-   public void prin() {
-    GenerateHTML cs = new GenerateHTML(completeHTML);
+   public void prin(String prinHtml) {
+    cs = new GenerateHTML(prinHtml);
   }
 
 }
