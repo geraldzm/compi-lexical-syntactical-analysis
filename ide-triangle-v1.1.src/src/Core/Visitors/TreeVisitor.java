@@ -42,7 +42,7 @@ public class TreeVisitor implements Visitor {
     public Object visitIfCommand(IfCommand ast, Object obj) {
         return(createTernary("If Command", ast.E, ast.C1, ast.C2));
     }
-
+    //Gerald - comentado por Leonardo Farina
     public Object visitElIfCommand(ElIfCommand ast, Object obj) {
         return(createBinary("Elif Command", ast.E, ast.C1));
     }
@@ -56,13 +56,15 @@ public class TreeVisitor implements Visitor {
         return(createBinary("Sequential Command", ast.C1, ast.C2));
     }
     
+    //Gerald - comentado por Leonardo Farina
     public Object visitWhileCommand(WhileCommand ast, Object obj) {// gerald zamora
         if(ast.B == null) {
             return(createBinary("Repeat While Command", ast.E, ast.C));
         }
         return(createTernary("Repeat While Command leave", ast.E, ast.C, ast.B));
     }
-
+    
+    //Gerald - comentado por Leonardo Farina
     @Override
     public Object visitUntilCommand(UntilCommand ast, Object o) { // gerald zamora
         if(ast.B == null) {
@@ -72,6 +74,7 @@ public class TreeVisitor implements Visitor {
 
     }
 
+    //Gerald - comentado por Leonardo Farina
     public Object visitDoWhileCommand(DoWhileCommand ast, Object o) {  // gerald zamora
         if(ast.B == null) {
             return(createBinary("Repeat Do While Command", ast.E, ast.A));
@@ -79,6 +82,7 @@ public class TreeVisitor implements Visitor {
         return(createTernary("Repeat Do While Command leave", ast.E, ast.A, ast.B));
     }
 
+    //Gerald - comentado por Leonardo Farina
     @Override
     public Object visitDoUntilCommand(DoUntilCommand ast, Object o) {  // gerald zamora
         if(ast.B == null) {
@@ -333,7 +337,8 @@ public class TreeVisitor implements Visitor {
         xml.write(ast);
         return(createUnary("Program", ast.C));
     }
-
+    
+    //Gerald - comentado por Leonardo Farina
     @Override
     public Object visitForDoCommand(ForDoCommand ast, Object o) { // gerald zamora
         if(ast.leaveC == null) {
@@ -341,7 +346,8 @@ public class TreeVisitor implements Visitor {
         }
         return(createN("For From while Do leave", ast.I, ast.E, ast.E1, ast.C, ast.leaveC));
     }
-
+    
+    //Gerald - comentado por Leonardo Farina
     @Override
     public Object visitForWhileCommand(ForWhileCommand ast, Object o) {// gerald zamora
         if(ast.leaveE == null) {
@@ -349,7 +355,8 @@ public class TreeVisitor implements Visitor {
         }
         return(createN("For From while Do leave", ast.I, ast.E, ast.E1, ast.E3, ast.C, ast.leaveE));
     }
-
+    
+    //Gerald - comentado por Leonardo Farina
     @Override
     public Object visitForUntilCommand(ForUntilCommand ast, Object o) {// gerald zamora
         if(ast.leaveE == null) {
@@ -436,6 +443,8 @@ public class TreeVisitor implements Visitor {
         return(t);             
     }
 
+        
+    //Gerald - comentado por Leonardo Farina
     public DefaultMutableTreeNode createN(String caption, AST ... children) {
         DefaultMutableTreeNode t = new DefaultMutableTreeNode(caption);
 

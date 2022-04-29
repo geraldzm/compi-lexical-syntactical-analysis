@@ -44,18 +44,39 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
+    //Leonardo Farina
     @Override
     public Object visitElIfCommand(ElIfCommand ast, Object o) {
+        writeLineHTML("<EliIfCommand>");
+        ast.E.visit(this, null);
+        ast.C1.visit(this, null);
+        writeLineHTML("</EliIfCommand>");
         return null;
     }
 
-    @Override
-    public Object visitDoWhileCommand(DoWhileCommand ast, Object o) {
-        return null;
-    }
-
+    //Leonardo Farina
     @Override
     public Object visitDoUntilCommand(DoUntilCommand ast, Object o) {
+        writeLineHTML("<DoUntilCommand>");
+        ast.E.visit(this, null);
+        ast.A.visit(this, null);        
+        if(ast.B != null) {            
+            ast.B.visit(this, null);
+        }
+        writeLineHTML("</DoUntilCommand>");
+        return null;
+    }
+    
+    //Leonardo Farina
+    @Override
+    public Object visitDoWhileCommand(DoWhileCommand ast, Object o) {
+        writeLineHTML("<DoWhileCommand>");
+        ast.E.visit(this, null);
+        ast.A.visit(this, null);   
+        if(ast.B != null) {            
+            ast.B.visit(this, null);
+        }
+        writeLineHTML("</DoWhileCommand>");
         return null;
     }
 
@@ -79,12 +100,24 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("<WhileCommand>");
         ast.E.visit(this, null);
         ast.C.visit(this, null);
+        // Leonardo Farina
+        if(ast.B != null) {            
+            ast.B.visit(this, null);
+        }
         writeLineHTML("</WhileCommand>");
         return null;
     }
 
+    //Leonardo Farina
     @Override
     public Object visitUntilCommand(UntilCommand ast, Object o) {
+        writeLineHTML("<UntilCommand>");
+        ast.E.visit(this, null);
+        ast.C.visit(this, null);        
+        if(ast.B != null) {            
+            ast.B.visit(this, null);
+        }
+        writeLineHTML("</UntilCommand>");
         return null;
     }
 
@@ -510,21 +543,53 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
+    // Leonardo Farina
     @Override
     public Object visitForDoCommand(ForDoCommand ast, Object o) {
+        writeLineHTML("<ForDoCommand>");
+        ast.I.visit(this, null);
+        ast.E.visit(this, null);
+        ast.E1.visit(this, null);        
+        ast.C.visit(this, null);              
+        if(ast.leaveC != null) {            
+            ast.leaveC.visit(this, null);
+        }
+        writeLineHTML("</ForDoCommand>");
         return null;
     }
 
-    @Override
-    public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-        return null;
-    }
-
+    // Leonardo Farina
     @Override
     public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
+        writeLineHTML("<ForUntilCommand>");
+        ast.I.visit(this, null);
+        ast.E.visit(this, null);
+        ast.E1.visit(this, null);          
+        ast.E3.visit(this, null);
+        ast.C.visit(this, null);
+        if(ast.leaveE != null) {            
+            ast.leaveE.visit(this, null);
+        }   
+        writeLineHTML("</ForUntilCommand>");
         return null;
     }
 
+    // Leonardo Farina
+    @Override
+    public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
+        writeLineHTML("<ForWhileCommand>");
+        ast.I.visit(this, null);
+        ast.E.visit(this, null);
+        ast.E1.visit(this, null);          
+        ast.E3.visit(this, null);
+        ast.C.visit(this, null);
+        if(ast.leaveE != null) {            
+            ast.leaveE.visit(this, null);
+        }       
+        writeLineHTML("</ForWhileCommand>");
+        return null;
+    }
+    
     private void writeLineHTML(String line) {
         try {
             fileWriter.write(line);

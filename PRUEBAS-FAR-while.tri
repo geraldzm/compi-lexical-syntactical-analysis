@@ -1,0 +1,29 @@
+let
+var i: Integer;
+var j: Integer;
+ var k: Integer;
+ var num: Integer
+in
+repeat
+while(3 > 3) do
+ i:= j;
+j:=3;
+end;
+
+repeat
+do
+i:= j;
+j:=3
+until (3 > 3)
+end;
+
+repeat
+until(3 > 3) do
+ i:= j;
+i:=3;
+j:=3;
+leave i:=5;
+
+end;
+
+end 
