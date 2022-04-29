@@ -280,7 +280,7 @@ public final class Scanner {
     if (typeTok < 2 ){
         completeHTML += "<b style=\"color:#0013B8; font-weight: normal;\">"+name;
     }
-    else if (typeTok <= 21 && typeTok >= 4){
+    else if (typeTok <= 32 && typeTok >= 4){
         completeHTML += "<b style=\"color:black; font-weight: bold;\">"+name;
     }
     else{
