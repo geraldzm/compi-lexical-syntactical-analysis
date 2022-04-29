@@ -1,5 +1,5 @@
 /*
- * @(#)WhileCommand.java                        2.1 2003/10/07
+ * @(#)IfCommand.java                        2.1 2003/10/07
  *
  * Copyright (C) 1999, 2003 D.A. Watt and D.F. Brown
  * Dept. of Computing Science, University of Glasgow, Glasgow G12 8QQ Scotland
@@ -16,19 +16,18 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
-public class WhileCommand extends Command {
+public class ElIfCommand extends Command {
 
-  public WhileCommand (Expression eAST, Command cAST, Command leaveAST, SourcePosition thePosition) {
+  public ElIfCommand(Expression eAST, Command c1AST, SourcePosition thePosition) {
     super (thePosition);
     E = eAST;
-    C = cAST;
-    B = leaveAST; // gerald zamora
+    C1 = c1AST;
   }
 
   public Object visit(Visitor v, Object o) {
-    return v.visitWhileCommand(this, o);
+    return v.visitElIfCommand(this, o);
   }
 
   public Expression E;
-  public Command C, B;
+  public Command C1;
 }

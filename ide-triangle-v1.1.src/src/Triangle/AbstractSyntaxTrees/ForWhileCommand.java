@@ -16,19 +16,23 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
-public class WhileCommand extends Command {
+public class ForWhileCommand extends Command { // gerald zamora
 
-  public WhileCommand (Expression eAST, Command cAST, Command leaveAST, SourcePosition thePosition) {
-    super (thePosition);
-    E = eAST;
+  public ForWhileCommand(Identifier identifier, Expression exp, Expression exp2, Expression eAST, Command cAST, Command leaAST, SourcePosition commandPos) {
+    super (commandPos);
+    I = identifier;
+    E = exp;
+    E1 = exp2;
+    E3 = eAST;
     C = cAST;
-    B = leaveAST; // gerald zamora
+    leaveE = leaAST;
   }
 
   public Object visit(Visitor v, Object o) {
-    return v.visitWhileCommand(this, o);
+    return v.visitForWhileCommand(this, o);
   }
 
-  public Expression E;
-  public Command C, B;
+  public Identifier I;
+  public Expression E, E1, E3;
+  public Command C, leaveE;
 }

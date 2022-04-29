@@ -1,0 +1,66 @@
+<?xml version="1.0" standalone="yes"?>
+<Program>
+<LetCommand>
+<SequentialDeclaration>
+<SequentialDeclaration>
+<SequentialDeclaration>
+<VarDeclaration>
+<Identifier value="i"/>
+<IntTypeDenoter/>
+</VarDeclaration>
+<VarDeclaration>
+<Identifier value="j"/>
+<IntTypeDenoter/>
+</VarDeclaration>
+</SequentialDeclaration>
+<VarDeclaration>
+<Identifier value="k"/>
+<IntTypeDenoter/>
+</VarDeclaration>
+</SequentialDeclaration>
+<VarDeclaration>
+<Identifier value="num"/>
+<IntTypeDenoter/>
+</VarDeclaration>
+</SequentialDeclaration>
+<SequentialCommand>
+<IfCommand>
+<BinaryExpression>
+<IntegerExpression>
+<IntegerLiteral value="3"/>
+</IntegerExpression>
+<Operator value=">"/>
+<IntegerExpression>
+<IntegerLiteral value="3"/>
+</IntegerExpression>
+</BinaryExpression>
+<SequentialCommand>
+<SequentialCommand>
+<SequentialCommand>
+<AssignCommand>
+<SimpleVname>
+<Identifier value="i"/>
+</SimpleVname>
+<VnameExpression>
+<SimpleVname>
+<Identifier value="j"/>
+</SimpleVname>
+</VnameExpression>
+</AssignCommand>
+<EmptyCommand/>
+</SequentialCommand>
+</SequentialCommand>
+</SequentialCommand>
+<AssignCommand>
+<SimpleVname>
+<Identifier value="j"/>
+</SimpleVname>
+<IntegerExpression>
+<IntegerLiteral value="4"/>
+</IntegerExpression>
+</AssignCommand>
+</IfCommand>
+<EmptyCommand/>
+</SequentialCommand>
+</LetCommand>
+</Program>

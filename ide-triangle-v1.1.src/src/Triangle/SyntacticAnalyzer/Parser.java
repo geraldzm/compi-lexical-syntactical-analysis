@@ -243,7 +243,7 @@ public class Parser {
       }
       break;
 
-    //Se eliminó begin
+    //Se eliminï¿½ begin
     // Se agrego el case de let Stephanie Quiros
     case Token.LET:
       {
@@ -269,9 +269,9 @@ public class Parser {
           acceptIt();
           Expression elifExp = parseExpression();
           accept(Token.THEN);
-          Command elifcAST = parseCommand();
-          //finish(commandPos);
-//          commandAST = new IfCommand(eAST, c1AST, c1AST, commandPos);
+
+          ElIfCommand elIfCommand = new ElIfCommand(elifExp, parseCommand(), commandPos);
+          c1AST = new SequentialCommand(c1AST, elIfCommand, commandPos);
         }
 
         accept(Token.ELSE);
@@ -291,83 +291,97 @@ public class Parser {
         acceptRepeat(currentToken.kind);
         
         // "repeat" "while" Expression "do" Command ["leave" Command] "end"
-        if(currentToken.kind == Token.WHILE || currentToken.kind == Token.UNTIL){
+        if(currentToken.kind == Token.WHILE || currentToken.kind == Token.UNTIL) {
+          int tkn = currentToken.kind;
 
             acceptIt();
             Expression eAST = parseExpression();
             accept(Token.DO);
             Command cAST = parseCommand();
-
+            Command leaAST = null;
             if(currentToken.kind == Token.LEAVE) {
               acceptIt();
-              Command leaAST = parseCommand();
+              leaAST = parseCommand();
             }
 
             accept(Token.END);
 
             finish(commandPos);
-            commandAST = new WhileCommand(eAST, cAST, commandPos);
+            commandAST = tkn == Token.WHILE ? new WhileCommand(eAST, cAST, leaAST, commandPos):
+                  new UntilCommand(eAST, cAST, leaAST, commandPos);
          }
         else if (currentToken.kind == Token.DO ){
             acceptIt();
             Command cAST = parseCommand();
-            acceptDo(currentToken.kind);
+            int tkn = currentToken.kind;
+
+            if(currentToken.kind == Token.WHILE || currentToken.kind == Token.UNTIL) // gerald zamora
+              acceptIt();
+             else
+              accept(Token.WHILE); // to throw error
+
             Expression eAST = parseExpression();
+            Command leaAST = null;
             if(currentToken.kind == Token.LEAVE) {
               acceptIt();
-              Command leaAST = parseCommand();
+              leaAST = parseCommand();
             }
 
             accept(Token.END);
 
             finish(commandPos);
-            commandAST = new WhileCommand(eAST, cAST, commandPos);
+            commandAST =  tkn == Token.WHILE ? new DoWhileCommand(cAST, eAST, leaAST, commandPos) :
+            new DoUntilCommand(cAST, eAST, leaAST, commandPos);
         }
 
     }
     break;
     
-    case Token.FOR:
+    case Token.FOR: // Stephanie - Gerald
     {
         acceptIt();
-        parseIdentifier();
+        Identifier identifier = parseIdentifier();
         accept(Token.FROM);
-        parseExpression();
+        Expression exp = parseExpression();
         accept(Token.DOUBLEDOT);
-        parseExpression();
-        acceptRepeat(currentToken.kind);
-        
+        Expression exp2 = parseExpression();
+
         // "repeat" "while" Expression "do" Command ["leave" Command] "end"
         if(currentToken.kind == Token.WHILE || currentToken.kind == Token.UNTIL){
+           int tkn = currentToken.kind;
 
             acceptIt();
             Expression eAST = parseExpression();
             accept(Token.DO);
             Command cAST = parseCommand();
 
+            Command leaAST = null;
             if(currentToken.kind == Token.LEAVE) {
               acceptIt();
-              Command leaAST = parseCommand();
+              leaAST = parseCommand();
             }
 
             accept(Token.END);
 
             finish(commandPos);
-            commandAST = new WhileCommand(eAST, cAST, commandPos);
-         }
-        else if (currentToken.kind == Token.DO ){
-            acceptIt();
+
+            commandAST = tkn == Token.WHILE ? new ForWhileCommand(identifier, exp, exp2, eAST, cAST, leaAST, commandPos) :
+                    new ForUntilCommand(identifier, exp, exp2, eAST, cAST, leaAST, commandPos);
+        }
+        else {
+            accept(Token.DO);
             Command cAST = parseCommand();
-            
+            Command leaAST = null;
+
             if(currentToken.kind == Token.LEAVE) {
               acceptIt();
-              Command leaAST = parseCommand();
+              leaAST = parseCommand();
             }
 
             accept(Token.END);
 
             finish(commandPos);
-            //commandAST = new WhileCommand(eAST, cAST, commandPos);
+            commandAST = new ForDoCommand(identifier, exp, exp2, cAST, leaAST, commandPos);
         }
         
     }

@@ -21,10 +21,15 @@ public interface Visitor {
   public abstract Object visitCallCommand(CallCommand ast, Object o);
   public abstract Object visitEmptyCommand(EmptyCommand ast, Object o);
   public abstract Object visitIfCommand(IfCommand ast, Object o);
+  public abstract Object visitElIfCommand(ElIfCommand ast, Object o);
+  public abstract Object visitDoWhileCommand(DoWhileCommand ast, Object o);
+  public abstract Object visitDoUntilCommand(DoUntilCommand ast, Object o);
+
   public abstract Object visitLetCommand(LetCommand ast, Object o);
   public abstract Object visitSequentialCommand(SequentialCommand ast, Object o);
   public abstract Object visitWhileCommand(WhileCommand ast, Object o);
-
+  
+  public abstract Object visitUntilCommand(UntilCommand ast, Object o);
 
   // Expressions
   public abstract Object visitArrayExpression(ArrayExpression ast, Object o);
@@ -104,4 +109,9 @@ public interface Visitor {
   // Programs
   public abstract Object visitProgram(Program ast, Object o);
 
+  Object visitForDoCommand(ForDoCommand ast, Object o);
+
+  Object visitForWhileCommand(ForWhileCommand ast, Object o);
+
+  Object visitForUntilCommand(ForUntilCommand ast, Object o);
 }

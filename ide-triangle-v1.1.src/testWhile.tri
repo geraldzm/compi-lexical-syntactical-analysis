@@ -26,9 +26,4 @@ leave i:=5;
 
 end;
 
-for i from (num == j) .. (j == i)
-do 
-num := j+i;
-end;
-
 end 

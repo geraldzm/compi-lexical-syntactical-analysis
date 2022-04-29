@@ -16,19 +16,19 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
-public class WhileCommand extends Command {
+public class DoUntilCommand extends Command { // gerald zamora
 
-  public WhileCommand (Expression eAST, Command cAST, Command leaveAST, SourcePosition thePosition) {
+  public DoUntilCommand(Command cAST, Expression eAST, Command leaveCommand, SourcePosition thePosition) {
     super (thePosition);
     E = eAST;
-    C = cAST;
-    B = leaveAST; // gerald zamora
+    A = cAST;
+    B = leaveCommand;
   }
 
   public Object visit(Visitor v, Object o) {
-    return v.visitWhileCommand(this, o);
+    return v.visitDoUntilCommand(this, o);
   }
 
   public Expression E;
-  public Command C, B;
+  public Command A, B;
 }
