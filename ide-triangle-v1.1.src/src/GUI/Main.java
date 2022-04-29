@@ -37,7 +37,8 @@ import Core.ExampleFileFilter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import Core.Visitors.TreeVisitor;
-import Triangle.GenerateHTML;
+//Leonardo Farina
+import Triangle.GenerateHTML; 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
