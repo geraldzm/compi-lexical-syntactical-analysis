@@ -69,56 +69,58 @@ final class Token extends Object {
     OPERATOR	= 3,
 
     // reserved words - must be in alphabetical order...
-    ARRAY		= 4,
-    CASE                = 5,
-    CONST		= 6,
-    DO			= 7,
-    ELIF		= 8,  
-    ELSE		= 9,
-    END			= 10,
-    FOR                 = 11, //Agregamos FOR Stephanie Quiros
-    FROM                = 12, //Agregamos FROM Stephanie Quiros
-    FUNC		= 13,
-    IF			= 14,
-    IN			= 15,
-    LEAVE		= 16, //Agregamos LEAVE Gerald
-    LET			= 17,
-    NOTHING		= 18, // Agregamos NOTHING   Leonardo Farina
-    OF			= 19,
-    PRIVATE             = 20, // Agregamos PRIVATE   David Suarez
-    PROC		= 21,
-    RECORD		= 22,
-    RECURSIVE           = 23, // Agregamos RECURSIVE David Suarez
-    REPEAT              = 24, //Agregamos REPEAT Stephanie Quiros
-    THEN		= 25,
-    TYPE		= 26,
-    UNTIL               = 27, //Agregamos UNTIL Stephanie Quiros
-    VAR			= 28,
-    WHEN                = 29,
-    WHILE		= 30,
+    AND 		= 4, // Cambio Leonardo Farina
+    ARRAY		= 5,
+    CASE                = 6, // Cambio Leonardo Farina
+    CHOOSE              = 7, // Cambio Leonardo Farina
+    CONST		= 8,
+    DO			= 9,
+    ELIF		= 10,  
+    ELSE		= 11,
+    END			= 12,
+    FOR                 = 13, //Agregamos FOR Stephanie Quiros
+    FROM                = 14, //Agregamos FROM Stephanie Quiros
+    FUNC		= 15,
+    IF			= 16,
+    IN			= 17,
+    LEAVE		= 18, //Agregamos LEAVE Gerald
+    LET			= 19,
+    NOTHING		= 20, // Agregamos NOTHING   Leonardo Farina
+    OF			= 21,
+    PRIVATE             = 22, // Agregamos PRIVATE   David Suarez
+    PROC		= 23,
+    RECORD		= 24,
+    RECURSIVE           = 25, // Agregamos RECURSIVE David Suarez
+    REPEAT              = 26, //Agregamos REPEAT Stephanie Quiros
+    THEN		= 27,
+    TYPE		= 28,
+    UNTIL               = 29, //Agregamos UNTIL Stephanie Quiros
+    VAR			= 30,
+    WHEN                = 31,
+    WHILE		= 32,
 
       
   
     // punctuation...
-    DOT			= 31,
-    COLON		= 32,
-    SEMICOLON           = 33,
-    COMMA		= 34,
-    BECOMES		= 35,
-    IS			= 36,
-    DOUBLEDOT           = 37, //Agregamos DOUBLEDOT Stephanie Quiros
+    DOT			= 33,
+    COLON		= 34,
+    SEMICOLON           = 35,
+    COMMA		= 36,
+    BECOMES		= 37,
+    IS			= 38,
+    DOUBLEDOT           = 39, //Agregamos DOUBLEDOT Stephanie Quiros
 
     // brackets...
-    LPAREN		= 38,
-    RPAREN		= 39,
-    LBRACKET            = 40,
-    RBRACKET            = 41,
-    LCURLY		= 42,
-    RCURLY		= 43,
+    LPAREN		= 40,
+    RPAREN		= 41,
+    LBRACKET            = 42,
+    RBRACKET            = 43,
+    LCURLY		= 44,
+    RCURLY		= 45,
 
     // special tokens...
-    EOT			= 44,
-    ERROR		= 45;
+    EOT			= 46,
+    ERROR		= 47;
           
 
   private static String[] tokenTable = new String[] {
@@ -126,8 +128,10 @@ final class Token extends Object {
     "<char>",
     "<identifier>",
     "<operator>",
+    "and", // Cambio Leonardo Farina agragamos "and"
     "array",
-    "case",
+    "case", // Cambio Leonardo Farina agragamos "case"
+    "choose", // Cambio Leonardo Farina agragamos "nothing"
     "const",
     "do",
     "elif", // Cambio Gerald Zamora
