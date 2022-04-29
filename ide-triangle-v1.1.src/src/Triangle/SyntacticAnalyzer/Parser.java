@@ -243,20 +243,18 @@ public class Parser {
       }
       break;
 
-//    case Token.BEGIN:
-//      acceptIt();
-//      commandAST = parseCommand();
-//      accept(Token.END);
-//      break;
-
+    //Se eliminó begin
+    // Se agrego el case de let Stephanie Quiros
     case Token.LET:
       {
         // Cambio stephanie
         acceptIt();
-        parseDeclaration();
+        Declaration dAST = parseDeclaration();
+        
         accept(Token.IN);
-        commandAST = parseCommand();
+        Command cAST = parseCommand();
         finish(commandPos);
+        commandAST = new LetCommand(dAST,cAST, commandPos);
         accept(Token.END);
       }
       break;
@@ -271,8 +269,8 @@ public class Parser {
           acceptIt();
           Expression elifExp = parseExpression();
           accept(Token.THEN);
-          Command elifAST = parseCommand();
-          finish(commandPos);
+          Command elifcAST = parseCommand();
+          //finish(commandPos);
 //          commandAST = new IfCommand(eAST, c1AST, c1AST, commandPos);
         }
 
@@ -286,7 +284,8 @@ public class Parser {
       }
       break;
 
-    case Token.REPEAT:
+    // Se agrego el case de repeat Stephanie Quiros
+    case Token.REPEAT: 
     {
         acceptIt();
         acceptRepeat(currentToken.kind);
