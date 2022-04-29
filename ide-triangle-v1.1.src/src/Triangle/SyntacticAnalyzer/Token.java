@@ -85,38 +85,40 @@ final class Token extends Object {
     LET			= 17,
     NOTHING		= 18, // Agregamos NOTHING   Leonardo Farina
     OF			= 19,
-    PROC		= 20,
-    RECORD		= 21,
-    REPEAT              = 22, //Agregamos REPEAT Stephanie Quiros
-    THEN		= 23,
-    TYPE		= 24,
-    UNTIL               = 25, //Agregamos UNTIL Stephanie Quiros
-    VAR			= 26,
-    WHEN                = 27,
-    WHILE		= 28,
+    PRIVATE             = 20, // Agregamos PRIVATE   David Suarez
+    PROC		= 21,
+    RECORD		= 22,
+    RECURSIVE           = 23, // Agregamos RECURSIVE David Suarez
+    REPEAT              = 24, //Agregamos REPEAT Stephanie Quiros
+    THEN		= 25,
+    TYPE		= 26,
+    UNTIL               = 27, //Agregamos UNTIL Stephanie Quiros
+    VAR			= 28,
+    WHEN                = 29,
+    WHILE		= 30,
 
       
   
     // punctuation...
-    DOT			= 29,
-    COLON		= 30,
-    SEMICOLON           = 31,
-    COMMA		= 32,
-    BECOMES		= 33,
-    IS			= 34,
-    DOUBLEDOT           = 35, //Agregamos DOUBLEDOT Stephanie Quiros
+    DOT			= 31,
+    COLON		= 32,
+    SEMICOLON           = 33,
+    COMMA		= 34,
+    BECOMES		= 35,
+    IS			= 36,
+    DOUBLEDOT           = 37, //Agregamos DOUBLEDOT Stephanie Quiros
 
     // brackets...
-    LPAREN		= 36,
-    RPAREN		= 37,
-    LBRACKET            = 38,
-    RBRACKET            = 39,
-    LCURLY		= 40,
-    RCURLY		= 41,
+    LPAREN		= 38,
+    RPAREN		= 39,
+    LBRACKET            = 40,
+    RBRACKET            = 41,
+    LCURLY		= 42,
+    RCURLY		= 43,
 
     // special tokens...
-    EOT			= 42,
-    ERROR		= 43;
+    EOT			= 44,
+    ERROR		= 45;
           
 
   private static String[] tokenTable = new String[] {
@@ -140,8 +142,10 @@ final class Token extends Object {
     "let",
     "nothing", // Cambio Leonardo Farina agragamos "nothing"
     "of",
+    "private", // Cambio David Suarez agragamos "private"
     "proc",
     "record",
+    "recursive", // Cambio David Suarez agragamos "recursive"
     "repeat", //Agregamos repeat Stephanie Quiros
     "then",
     "type",
