@@ -49,7 +49,7 @@ public class IDECompiler {
         Scanner scanner = new Scanner(source);
         report = new IDEReporter();
         Parser parser = new Parser(scanner, report);
-        boolean success = true;
+        boolean success = false;
         
         rootAST = parser.parseProgram();
 //        if (report.numErrors == 0) {
@@ -68,8 +68,14 @@ public class IDECompiler {
 //            }
 //        }
 
-
-        
+        if (report.numErrors == 0){ 
+            success = true;
+            System.out.println("Compilation was successful.");
+        }
+        else{
+            System.out.println("Compilation was unsuccessful.");
+        }
+                
         return(success);
     }
       
