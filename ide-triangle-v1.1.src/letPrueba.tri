@@ -1,7 +1,0 @@
-let
-var i: Integer
-in
-i := 5;
-nothing;
-nothing
-end;

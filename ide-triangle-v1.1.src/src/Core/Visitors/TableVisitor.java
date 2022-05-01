@@ -58,6 +58,7 @@ public class TableVisitor implements Visitor {
       return(null);
   }
 
+    //Gerald
     @Override
     public Object visitElIfCommand(ElIfCommand ast, Object o) {
         ast.E.visit(this, null);
@@ -75,6 +76,12 @@ public class TableVisitor implements Visitor {
         return null;
     }
 
+    //Leonardo
+    @Override
+    public Object visitNothingCommand(NothingCommand ast, Object o) {
+        return null;
+    }
+    
     public Object visitLetCommand(LetCommand ast, Object o) {
       ast.D.visit(this, null);
       ast.C.visit(this, null);

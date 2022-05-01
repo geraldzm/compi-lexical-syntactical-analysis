@@ -55,6 +55,11 @@ public final class Checker implements Visitor {
     return null;
   }
 
+  //Leonardo
+  public Object visitNothingCommand(NothingCommand ast, Object o) {
+    return null;
+  }
+    
   public Object visitIfCommand(IfCommand ast, Object o) {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (! eType.equals(StdEnvironment.booleanType))

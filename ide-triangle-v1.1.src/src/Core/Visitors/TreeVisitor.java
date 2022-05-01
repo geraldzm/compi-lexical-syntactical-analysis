@@ -39,6 +39,11 @@ public class TreeVisitor implements Visitor {
         return(createNullary("Empty Command"));
     }
     
+    //Leonardo
+    public Object visitNothingCommand(NothingCommand ast, Object o) {
+        return(createNullary("Nothing Command"));
+    }
+    
     public Object visitIfCommand(IfCommand ast, Object obj) {
         return(createTernary("If Command", ast.E, ast.C1, ast.C2));
     }

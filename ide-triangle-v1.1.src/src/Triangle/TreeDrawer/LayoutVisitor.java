@@ -42,6 +42,11 @@ public class LayoutVisitor implements Visitor {
     return layoutNullary("EmptyCom.");
   }
 
+  //Leonardo
+  public Object visitNothingCommand(NothingCommand ast, Object obj) {
+    return layoutNullary("NothingCom.");
+  }
+    
   public Object visitIfCommand(IfCommand ast, Object obj) {
     return layoutTernary("IfCom.", ast.E, ast.C1, ast.C2);
   }

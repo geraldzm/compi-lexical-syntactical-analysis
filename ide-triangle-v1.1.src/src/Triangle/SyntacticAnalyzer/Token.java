@@ -174,7 +174,7 @@ final class Token extends Object {
     "<error>"    
   };
 
-  private final static int	firstReservedWord = Token.AND,                                
+  private final static int	firstReservedWord = Token.AND,  // Cambio Leonardo Farina                               
   				lastReservedWord  = Token.WHILE; 
 
 }

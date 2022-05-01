@@ -99,6 +99,7 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+  //Gerald
   @Override
   public Object visitUntilCommand(UntilCommand ast, Object o) {
     return null;
@@ -674,11 +675,12 @@ public final class Encoder implements Visitor {
     return ast.C.visit(this, o);
   }
 
+  //Gerald
   @Override
   public Object visitForDoCommand(ForDoCommand ast, Object o) {
     return null;
   }
-
+  
   @Override
   public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
     return null;
@@ -686,6 +688,11 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
+    return null;
+  }
+  
+  //Leonardo
+  public Object visitNothingCommand(NothingCommand ast, Object o) {
     return null;
   }
 

@@ -109,9 +109,12 @@ public interface Visitor {
   // Programs
   public abstract Object visitProgram(Program ast, Object o);
 
-  Object visitForDoCommand(ForDoCommand ast, Object o);
-
-  Object visitForWhileCommand(ForWhileCommand ast, Object o);
-
-  Object visitForUntilCommand(ForUntilCommand ast, Object o);
+  //Gerald
+  public abstract Object visitForDoCommand(ForDoCommand ast, Object o);
+  public abstract Object visitForWhileCommand(ForWhileCommand ast, Object o);
+  public abstract Object visitForUntilCommand(ForUntilCommand ast, Object o);
+  
+  //Leonardo
+  public abstract Object visitNothingCommand(NothingCommand ast, Object o);
+  
 }

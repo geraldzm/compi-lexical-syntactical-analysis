@@ -394,9 +394,10 @@ public class Parser {
       {
         acceptIt();
         finish(commandPos);
-        commandAST = new EmptyCommand(commandPos);
+        commandAST = new NothingCommand(commandPos);
       }
       break;
+      
     case Token.DOUBLEDOT:
     case Token.FROM:
     case Token.DO:

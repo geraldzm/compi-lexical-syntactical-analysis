@@ -34,6 +34,12 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("<EmptyCommand/>");
         return null;
     }
+    
+    //Leonardo
+    public Object visitNothingCommand(NothingCommand ast, Object obj) {
+        writeLineHTML("<NothingCommand/>");
+        return null;
+    }
 
     public Object visitIfCommand(IfCommand ast, Object obj) {
         writeLineHTML("<IfCommand>");
