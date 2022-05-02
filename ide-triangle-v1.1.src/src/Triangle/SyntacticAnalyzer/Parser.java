@@ -1173,7 +1173,7 @@ public class Parser {
 //
 ///////////////////////////////////////////////////////////////////////////////
   
-    Cases parseCases() throws SyntaxError {
+  Cases parseCases() throws SyntaxError {
     Cases casesAST = null; // in case there's a syntactic error
 
     SourcePosition casesPos = new SourcePosition();
@@ -1184,7 +1184,7 @@ public class Parser {
     return casesAST;
   }
     
-    Cases parseCase() throws SyntaxError {
+  Cases parseCase() throws SyntaxError {
     Cases caseAST = null; // in case there's a syntactic error
 
     SourcePosition casePos = new SourcePosition();
@@ -1221,7 +1221,7 @@ public class Parser {
     return caseAST;
   }
     
-    CaseLiteral parseCaseLiteral() throws SyntaxError {
+  CaseLiteral parseCaseLiteral() throws SyntaxError {
     CaseLiteral CL = null;
 
     if (currentToken.kind == Token.INTLITERAL || currentToken.kind == Token.IDENTIFIER  ) {

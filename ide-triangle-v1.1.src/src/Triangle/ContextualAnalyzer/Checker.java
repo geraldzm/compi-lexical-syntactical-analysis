@@ -68,7 +68,7 @@ public final class Checker implements Visitor {
     ast.C2.visit(this, null);
     return null;
   }
-
+  //Gerald
   @Override
   public Object visitElIfCommand(ElIfCommand ast, Object o) {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
@@ -604,7 +604,8 @@ public final class Checker implements Visitor {
 
   public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object o) {
     ast.T = (TypeDenoter) ast.T.visit(this, null);
-    if ((Integer.valueOf(ast.IL.spelling).intValue()) == 0)
+    //Leonardo
+    if ((Integer.valueOf(ast.IL.spelling).intValue()) == 0 || Integer.valueOf(ast.IL2.spelling).intValue() == 0)
       reporter.reportError ("arrays must not be empty", "", ast.IL.position);
     return ast;
   }
