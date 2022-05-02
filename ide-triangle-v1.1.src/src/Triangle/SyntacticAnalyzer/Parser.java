@@ -1082,7 +1082,108 @@ public class Parser {
     }
     return actualAST;
   }
+  
+  /*
+  // David Suarez
+  Declaration parseCompoundDeclaration() throws SyntaxError {
+      Declaration declarationAST = null; // in case there's a syntactic error
 
+      SourcePosition declarationPos = new SourcePosition();
+      start(declarationPos);
+      
+
+      switch (currentToken.kind) {
+
+      case Token.RECURSIVE:
+        {
+            acceptIt();
+           // ProcFuncs pfAST = parseProcFuncs();
+            finish(declarationPos);
+            //declarationAST = new ProcFuncs();
+            accept(Token.END);
+        }
+        break;
+
+      case Token.PRIVATE:
+        {
+            acceptIt();
+            Declaration d1AST = parseDeclaration();
+            accept(Token.IN);
+            Declaration d2AST = parseDeclaration();
+            finish(declarationPos);
+            //declarationAST = new PrivateDeclaration(d1AST,d2AST,declarationPos);
+            accept(Token.END);
+        }
+        break;
+
+
+      default:
+            declarationAST = parseSingleDeclaration();
+        break;
+      }
+      return declarationAST;
+  }
+  // David Suarez
+  Declaration parseProcFuncs() throws SyntaxError {
+    Declaration procFuncsAST = null; // in case there's a syntactic error
+
+    SourcePosition casesPos = new SourcePosition();
+
+    start(casesPos);
+    procFuncsAST = ProcFunc();
+    
+    return procFuncsAST;
+  }
+  // David Suarez
+    Declaration ProcFunc() throws SyntaxError {
+      Declaration declarationAST = null; // in case there's a syntactic error
+
+      SourcePosition declarationPos = new SourcePosition();
+      start(declarationPos);
+
+      switch (currentToken.kind) {
+
+      case Token.PROC:
+        {
+          acceptIt();
+          Identifier iAST = parseIdentifier();
+          accept(Token.LPAREN);
+          FormalParameterSequence fpsAST = parseFormalParameterSequence();
+          accept(Token.RPAREN);
+          accept(Token.IS);
+          Command cAST = parseCommand();
+          accept(Token.END);
+          finish(declarationPos);
+          declarationAST = new ProcDeclaration(iAST, fpsAST, cAST, declarationPos);
+        }
+        break;
+
+      case Token.FUNC:
+        {
+          acceptIt();
+          Identifier iAST = parseIdentifier();
+          accept(Token.LPAREN);
+          FormalParameterSequence fpsAST = parseFormalParameterSequence();
+          accept(Token.RPAREN);
+          accept(Token.COLON);
+          TypeDenoter tAST = parseTypeDenoter();
+          accept(Token.IS);
+          Expression eAST = parseExpression();
+          finish(declarationPos);
+          declarationAST = new FuncDeclaration(iAST, fpsAST, tAST, eAST,
+            declarationPos);
+        }
+        break;
+
+        default:
+            syntacticError("\"%\" cannot start a type denoter",
+                currentToken.spelling);
+        break;
+      }
+      return declarationAST;
+  }
+        */
+  
 ///////////////////////////////////////////////////////////////////////////////
 //
 // TYPE-DENOTERS

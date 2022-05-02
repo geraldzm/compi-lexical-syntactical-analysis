@@ -101,7 +101,7 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("</SequentialCommand>");
         return null;
     }
-
+    
     public Object visitWhileCommand(WhileCommand ast, Object obj) {
         writeLineHTML("<WhileCommand>");
         ast.E.visit(this, null);
