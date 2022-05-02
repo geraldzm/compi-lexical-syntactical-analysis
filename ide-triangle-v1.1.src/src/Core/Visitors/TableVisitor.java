@@ -294,6 +294,13 @@ public class TableVisitor implements Visitor {
       return(null);
   }
   
+    //Leonardo
+    @Override
+    public Object visitVarInitialized(VarInitialized ast, Object obj) {
+      ast.I.visit(this, null);
+      ast.T.visit(this, null);      
+      return(null);
+    }
   // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc=" Aggregates ">

@@ -145,7 +145,10 @@ public final class Checker implements Visitor {
   }
     //Leonardo
   @Override
-  public Object visitChooseCommand(ChooseCommand ast, Object o) {
+  public Object visitChooseCommand(ChooseCommand ast, Object o) {      
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
     ast.E.visit(this, null); 
     ast.B.visit(this, null);
     if(ast.C != null) 
@@ -358,6 +361,16 @@ public final class Checker implements Visitor {
     return null;
   }
 
+    //Leonardo
+    public Object visitVarInitialized(VarInitialized ast, Object obj) {
+        TypeDenoter eType = (TypeDenoter) ast.T.visit(this, null);
+        if (! eType.equals(StdEnvironment.booleanType))
+          reporter.reportError("Boolean expression expected here", "", ast.T.position);
+        ast.I.visit(this, null); 
+        ast.T.visit(this, null);
+        return null;
+    }
+    
   // Array Aggregates
 
   // Returns the TypeDenoter for the Array Aggregate. Does not use the

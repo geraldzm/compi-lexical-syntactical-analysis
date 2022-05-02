@@ -120,6 +120,8 @@ public interface Visitor {
   public abstract Object visitCaseLiteral(CaseLiteral ast, Object o);
   public abstract Object visitCase(Case ast, Object o);
   public abstract Object visitChooseCommand(ChooseCommand ast, Object o);
+  public abstract Object visitVarInitialized(VarInitialized ast, Object o);
+  
   
   
 }

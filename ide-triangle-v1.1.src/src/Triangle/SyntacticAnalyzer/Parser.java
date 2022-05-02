@@ -714,14 +714,22 @@ public class Parser {
       }
       break;
 
+    //Leonardo
     case Token.VAR:
       {
         acceptIt();
         Identifier iAST = parseIdentifier();
-        accept(Token.COLON);
-        TypeDenoter tAST = parseTypeDenoter();
-        finish(declarationPos);
-        declarationAST = new VarDeclaration(iAST, tAST, declarationPos);
+        if (currentToken.kind == Token.COLON) {
+            acceptIt();
+            TypeDenoter tAST = parseTypeDenoter();
+            finish(declarationPos);
+            declarationAST = new VarDeclaration(iAST, tAST, declarationPos);
+        } else {
+            accept(Token.BECOMES);
+            Expression tAST = parseExpression();
+            finish(declarationPos);
+            declarationAST = new VarInitialized(iAST, tAST, declarationPos);   
+        }
       }
       break;
 

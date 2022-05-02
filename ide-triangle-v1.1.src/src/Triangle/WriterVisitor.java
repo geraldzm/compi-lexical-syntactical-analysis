@@ -415,6 +415,14 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
+    //Leonardo
+    public Object visitVarInitialized(VarInitialized ast, Object obj) {
+        writeLineHTML("<VarInitialized>");
+        ast.I.visit(this, null);
+        ast.T.visit(this, null);
+        writeLineHTML("</VarInitialized>");
+      return(null);
+    }
 
     public Object visitEmptyActualParameterSequence(EmptyActualParameterSequence ast, Object obj) {
         writeLineHTML("<EmptyActualParameterSequence/>");

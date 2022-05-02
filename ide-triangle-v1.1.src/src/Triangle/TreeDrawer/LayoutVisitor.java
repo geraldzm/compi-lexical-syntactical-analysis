@@ -181,6 +181,10 @@ public class LayoutVisitor implements Visitor {
   public Object visitVarDeclaration(VarDeclaration ast, Object obj) {
     return layoutBinary("VarDecl.", ast.I, ast.T);
   }
+  //Leonardo
+  public Object visitVarInitialized(VarInitialized ast, Object obj) {
+      return(layoutBinary("VarInit", ast.I, ast.T));
+  }
 
 
   // Array Aggregates

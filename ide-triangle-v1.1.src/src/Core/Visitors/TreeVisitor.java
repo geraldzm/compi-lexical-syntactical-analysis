@@ -202,6 +202,10 @@ public class TreeVisitor implements Visitor {
     public Object visitVarDeclaration(VarDeclaration ast, Object obj) {
         return(createBinary("Variable Declaration", ast.I, ast.T));
     }
+    //Leonardo
+    public Object visitVarInitialized(VarInitialized ast, Object obj) {
+        return(createBinary("Variable Initialized", ast.I, ast.T));
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" Aggregates ">

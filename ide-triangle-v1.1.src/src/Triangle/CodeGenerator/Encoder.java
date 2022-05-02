@@ -325,8 +325,12 @@ public final class Encoder implements Visitor {
     writeTableDetails(ast);
     return new Integer(extraSize);
   }
-
-
+  
+  //Leonardo
+  public Object visitVarInitialized(VarInitialized ast, Object o) {      
+    return null;
+  }
+  
   // Array Aggregates
   public Object visitMultipleArrayAggregate(MultipleArrayAggregate ast,
 					    Object o) {
