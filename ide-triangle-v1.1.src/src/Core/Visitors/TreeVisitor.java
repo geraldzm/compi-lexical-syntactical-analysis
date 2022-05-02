@@ -290,8 +290,12 @@ public class TreeVisitor implements Visitor {
         return(createNullary("any"));
     }
     
+    // Leonardo
     public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object obj) {
-        return(createBinary("Array Type Denoter", ast.IL, ast.T));
+        if(ast.IL2 == null){
+            return(createBinary("Array Type Denoter", ast.IL, ast.T));        
+        }
+        return(createTernary("Array Type Denoter ..", ast.IL,ast.IL2, ast.T));
     }
     
     public Object visitBoolTypeDenoter(BoolTypeDenoter ast, Object obj) {

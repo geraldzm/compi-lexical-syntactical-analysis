@@ -1102,12 +1102,19 @@ public class Parser {
       {
         acceptIt();
         IntegerLiteral ilAST = parseIntegerLiteral();
-        accept(Token.DOUBLEDOT);
-        IntegerLiteral wlAST = parseIntegerLiteral();
-        accept(Token.OF);
-        TypeDenoter tAST = parseTypeDenoter();
-        finish(typePos);
-        typeAST = new ArrayTypeDenoter(ilAST, tAST, typePos);
+        if(currentToken.kind == Token.DOUBLEDOT){
+            acceptIt();
+            IntegerLiteral wlAST = parseIntegerLiteral();
+            accept(Token.OF);
+            TypeDenoter tAST = parseTypeDenoter();
+            finish(typePos);
+            typeAST = new ArrayTypeDenoter(ilAST,wlAST, tAST, typePos);
+        }else{ 
+            accept(Token.OF);
+            TypeDenoter tAST = parseTypeDenoter();
+            finish(typePos);
+            typeAST = new ArrayTypeDenoter(ilAST,null, tAST, typePos);
+        }
       }
       break;
 

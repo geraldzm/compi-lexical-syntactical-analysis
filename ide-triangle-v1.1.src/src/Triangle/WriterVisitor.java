@@ -443,9 +443,12 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
+    //Leonardo
     public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object obj) {
         writeLineHTML("<ArrayTypeDenoter>");
         ast.IL.visit(this, null);
+        if(ast.IL2 != null)
+            ast.IL2.visit(this, null);
         ast.T.visit(this, null);
         writeLineHTML("</ArrayTypeDenoter>");
         return null;

@@ -47,7 +47,7 @@ final class Token extends Object {
   }
 
   public static String spell (int kind) {
-    return tokenTable[kind];
+    return tokenTable[kind]; 
   }
   public static String toKind(Token lol) {
     return tokenTable[lol.kind];
