@@ -126,7 +126,17 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("</UntilCommand>");
         return null;
     }
-
+    //Leonardo
+        public Object visitChooseCommand(ChooseCommand ast, Object o) {
+        writeLineHTML("<ChooseCommand>");
+        ast.E.visit(this, null); 
+        ast.B.visit(this, null);
+        if(ast.C != null) 
+            ast.C.visit(this, null);
+        writeLineHTML("</ChooseCommand>");
+        return null;
+    }
+    
 
     // Expressions
     public Object visitArrayExpression(ArrayExpression ast, Object obj) {
@@ -514,7 +524,24 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("<Operator value=\"" + transformOperator(ast.spelling) + "\"/>");
         return null;
     }
-
+    // Leonardo
+    public Object visitCaseLiteral(CaseLiteral ast, Object obj) {
+        writeLineHTML("<CaseLiteral value=\"" + ast.spelling + "\"/>");
+        return null;
+    }
+    public Object visitCase(Case ast, Object obj) {
+        writeLineHTML("<Case>");
+        ast.A.visit(this, null);
+        if(ast.B != null) {            
+            ast.B.visit(this, null);
+        }       
+        ast.leaAST.visit(this, null);
+        if(ast.C != null) {            
+            ast.C.visit(this, null);
+        }       
+        writeLineHTML("</Case>");
+        return null;
+    }
 
     // Value-or-variable names
     public Object visitDotVname(DotVname ast, Object obj) {

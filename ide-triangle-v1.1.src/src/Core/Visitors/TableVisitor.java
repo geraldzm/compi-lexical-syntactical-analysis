@@ -81,6 +81,24 @@ public class TableVisitor implements Visitor {
     public Object visitNothingCommand(NothingCommand ast, Object o) {
         return null;
     }
+    @Override
+    public Object visitCase(Case ast, Object o) {        
+        ast.A.visit(this, null);
+        if(ast.B != null) 
+            ast.B.visit(this, null);    
+        ast.leaAST.visit(this, null);
+        return null;
+    }
+    
+    //Leonardo
+    @Override
+    public Object visitChooseCommand(ChooseCommand ast, Object o) {
+        ast.E.visit(this, null); 
+        ast.B.visit(this, null);
+        if(ast.C != null) 
+            ast.C.visit(this, null);
+        return null;
+    }
     
     public Object visitLetCommand(LetCommand ast, Object o) {
       ast.D.visit(this, null);
@@ -518,6 +536,11 @@ public class TableVisitor implements Visitor {
   public Object visitOperator(Operator ast, Object o) { 
       ast.decl.visit(this, null);
   
+      return(null);
+  }
+  
+  //Leonardo
+  public Object visitCaseLiteral(CaseLiteral ast, Object o) {   
       return(null);
   }
   // </editor-fold>

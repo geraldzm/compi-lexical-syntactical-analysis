@@ -114,6 +114,20 @@ public final class Encoder implements Visitor {
   public Object visitDoUntilCommand(DoUntilCommand ast, Object o) {
     return null;
   }
+  
+  //Leonardo
+  @Override
+  public Object visitCaseLiteral(CaseLiteral ast, Object o) {
+    return null;
+  }
+  @Override
+  public Object visitCase(Case ast, Object o) {
+    return null;
+  }
+  @Override
+  public Object visitChooseCommand(ChooseCommand ast, Object o) {
+    return null;
+  }
 
 
   // Expressions

@@ -95,6 +95,30 @@ public class TreeVisitor implements Visitor {
         }
         return(createTernary("Repeat Do Until Command leave", ast.E, ast.A, ast.B));
     }
+    
+    //Leonardo
+    @Override
+    public Object visitChooseCommand(ChooseCommand ast, Object o) {
+        if(ast.C == null) {
+            return(createBinary("Choose From End", ast.E, ast.B));
+        }
+        return(createTernary("Choose From Else End", ast.E, ast.B, ast.C));
+    }
+    
+    //Leonardo
+    @Override
+    public Object visitCase(Case ast, Object obj) {
+        if(ast.B == null) {            
+            if(ast.C != null) {
+                return(createN("Case", ast.A, ast.leaAST,ast.C));
+            }
+            return(createN("Case", ast.A, ast.leaAST));
+        }
+        if(ast.C != null) {
+            return(createN("Case", ast.A, ast.B, ast.leaAST, ast.C));
+        }
+        return(createTernary("Case", ast.A, ast.B, ast.leaAST));
+    }
 
     // </editor-fold>
     
@@ -318,6 +342,10 @@ public class TreeVisitor implements Visitor {
     }
     
     public Object visitOperator(Operator ast, Object obj) {
+        return(createNullary(ast.spelling));
+    }
+    // Leonardo
+    public Object visitCaseLiteral(CaseLiteral ast, Object obj) {
         return(createNullary(ast.spelling));
     }
     // </editor-fold>

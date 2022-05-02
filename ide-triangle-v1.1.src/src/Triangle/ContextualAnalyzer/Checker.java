@@ -132,6 +132,30 @@ public final class Checker implements Visitor {
     if(ast.B != null) ast.B.visit(this, null);
     return null;
   }
+  
+  
+  //Leonardo
+  @Override
+  public Object visitCase(Case ast, Object o) {
+    ast.A.visit(this, null);
+    if(ast.B != null) 
+        ast.B.visit(this, null);    
+    ast.leaAST.visit(this, null);
+    return null;
+  }
+    //Leonardo
+  @Override
+  public Object visitChooseCommand(ChooseCommand ast, Object o) {
+    ast.E.visit(this, null); 
+    ast.B.visit(this, null);
+    if(ast.C != null) 
+        ast.C.visit(this, null);
+    return null;
+  }
+  
+  
+  
+  
   // Expressions
 
   // Returns the TypeDenoter denoting the type of the expression. Does
@@ -630,6 +654,16 @@ public final class Checker implements Visitor {
     return StdEnvironment.integerType;
   }
 
+  //Leonardo
+  public Object visitCaseLiteral(CaseLiteral IL, Object o) {
+    try {  
+        Double.parseDouble(IL.spelling);  
+        return StdEnvironment.integerType;
+    } catch(NumberFormatException e){  
+        return StdEnvironment.charType;  
+    }
+  }
+    
   public Object visitOperator(Operator O, Object o) {
     Declaration binding = idTable.retrieve(O.spelling);
     if (binding != null)

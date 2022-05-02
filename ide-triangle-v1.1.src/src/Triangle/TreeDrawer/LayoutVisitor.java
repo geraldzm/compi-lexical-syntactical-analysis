@@ -84,7 +84,24 @@ public class LayoutVisitor implements Visitor {
   public Object visitUntilCommand(UntilCommand ast, Object o) {
     return null;
   }
+  
+    //Leonardo
+    @Override
+    public Object visitChooseCommand(ChooseCommand ast, Object o) {
+        if(ast.C == null) {
+            return(layoutBinary("ChooseCom.", ast.E, ast.B));
+        }
+        return(layoutTernary("ChooseCom.", ast.E, ast.B, ast.C));
+    }
 
+    //Leonardo  
+    public Object visitCase(Case ast, Object obj) {
+        if(ast.B == null) {
+            return(layoutBinary("Case.com", ast.A, ast.leaAST));
+        }
+        return(layoutTernary("Case.com", ast.A, ast.B, ast.leaAST));
+    }
+    
 
   // Expressions
   public Object visitArrayExpression(ArrayExpression ast, Object obj) {
@@ -296,6 +313,10 @@ public class LayoutVisitor implements Visitor {
     return layoutNullary(ast.spelling);
   }
 
+    public Object visitCaseLiteral(CaseLiteral ast, Object obj) {
+    return layoutNullary(ast.spelling);
+  }
+    
   public Object visitIdentifier(Identifier ast, Object obj) {
     return layoutNullary(ast.spelling);
  }

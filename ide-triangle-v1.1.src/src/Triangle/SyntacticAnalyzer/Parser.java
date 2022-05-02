@@ -39,7 +39,7 @@ public class Parser {
       previousTokenPosition = currentToken.position;
       currentToken = lexicalAnalyser.scan();
     } else {
-      syntacticError("\"%\" expected here", Token.spell(tokenExpected) +" recibi:" +currentToken.toString());
+      syntacticError("\"%\" expected here", Token.spell(tokenExpected)); //+" recibi:" +currentToken.toString());
     }
   }
     void acceptRepeat (int tokenExpected) throws SyntaxError {
@@ -387,7 +387,26 @@ public class Parser {
     }
     break;
       
-    
+    // Se agrego el case de CHOOSE Leonardo
+    case Token.CHOOSE:
+      {
+        acceptIt();
+        Expression eAST = parseExpression();        
+        accept(Token.FROM);   
+        Cases cAST = parseCases();  
+        if(currentToken.kind == Token.ELSE){
+            acceptIt();
+            Command leaAST = parseCommand();
+            accept(Token.END);
+            finish(commandPos);
+            commandAST = new ChooseCommand(eAST, cAST, leaAST, commandPos);
+        }else{
+            accept(Token.END);            
+            finish(commandPos);
+            commandAST = new ChooseCommand(eAST, cAST, null, commandPos);
+        }       
+      }
+      break;
       
     // Cambio Leonardo Farina
     case Token.NOTHING:
@@ -412,7 +431,7 @@ public class Parser {
       //System.out.println("AHORA PASA: " + Token.toKind(currentToken));
       //System.out.println("AHORA PASA: " + Token.spell(35));
       finish(commandPos);
-      commandAST = new EmptyCommand(commandPos);
+      commandAST = new NothingCommand(commandPos);
       break;
 
     default:
@@ -1078,10 +1097,13 @@ public class Parser {
       }
       break;
 
+    //Cambio Leonardo
     case Token.ARRAY:
       {
         acceptIt();
         IntegerLiteral ilAST = parseIntegerLiteral();
+        accept(Token.DOUBLEDOT);
+        IntegerLiteral wlAST = parseIntegerLiteral();
         accept(Token.OF);
         TypeDenoter tAST = parseTypeDenoter();
         finish(typePos);
@@ -1128,4 +1150,76 @@ public class Parser {
     }
     return fieldAST;
   }
+  
+///////////////////////////////////////////////////////////////////////////////
+//
+// CASES
+// Leonardo
+//
+///////////////////////////////////////////////////////////////////////////////
+  
+    Cases parseCases() throws SyntaxError {
+    Cases casesAST = null; // in case there's a syntactic error
+
+    SourcePosition casesPos = new SourcePosition();
+
+    start(casesPos);
+    casesAST = parseCase();
+    
+    return casesAST;
+  }
+    
+    Cases parseCase() throws SyntaxError {
+    Cases caseAST = null; // in case there's a syntactic error
+
+    SourcePosition casePos = new SourcePosition();
+
+    start(casePos);
+    
+    switch (currentToken.kind) {
+     case Token.WHEN:
+      {
+        while(currentToken.kind == Token.WHEN) {
+            acceptIt();
+            CaseLiteral aCasLit = parseCaseLiteral();
+
+            if(currentToken.kind == Token.DOUBLEDOT){
+                acceptIt();            
+                CaseLiteral bCasLit = parseCaseLiteral();
+                accept(Token.THEN);            
+                Command leaAST = parseCommand();
+                caseAST = new Case( aCasLit, bCasLit, leaAST, casePos, caseAST);
+            }else{
+                accept(Token.THEN);            
+                Command leaAST = parseCommand();
+                caseAST = new Case( aCasLit, null, leaAST, casePos, caseAST);
+            }
+        }
+      }
+      break;
+
+    default:
+      syntacticError("\"%\" cannot start a case",
+        currentToken.spelling);
+      break;
+    }    
+    return caseAST;
+  }
+    
+    CaseLiteral parseCaseLiteral() throws SyntaxError {
+    CaseLiteral CL = null;
+
+    if (currentToken.kind == Token.INTLITERAL || currentToken.kind == Token.IDENTIFIER  ) {
+      previousTokenPosition = currentToken.position;
+      String spelling = currentToken.spelling;
+      CL = new CaseLiteral(spelling, previousTokenPosition);
+      currentToken = lexicalAnalyser.scan();
+    }
+    else {
+      CL = null;
+      syntacticError("case literal expected here", "");
+    }
+    return CL;
+  }     
 }
+
