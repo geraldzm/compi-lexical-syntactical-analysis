@@ -371,6 +371,27 @@ public final class Checker implements Visitor {
         return null;
     }
     
+    //Leonardo
+    public Object visitProcFuncs(ProcFuncs ast, Object obj) {   
+      ast.PF1.visit(this, null);
+      ast.PF2.visit(this, null);    
+      return(null);
+    }
+    //Leonardo
+    @Override
+    public Object visitRecursive(Recursive ast, Object obj) {
+      ast.PF1.visit(this, null);
+      return(null);
+    }  
+    
+    //Leonardo
+    @Override
+    public Object visitPrivate(Private ast, Object obj) {
+      ast.D1.visit(this, null);
+      ast.D2.visit(this, null);      
+      return(null);
+    }
+    
   // Array Aggregates
 
   // Returns the TypeDenoter for the Array Aggregate. Does not use the

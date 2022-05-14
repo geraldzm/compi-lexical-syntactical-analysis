@@ -129,7 +129,25 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+    //Leonardo
+    @Override
+    public Object visitProcFuncs(ProcFuncs ast, Object obj) {        
+      return(null);
+    }
 
+    //Leonardo
+    @Override
+    public Object visitRecursive(Recursive ast, Object obj) {
+      return(null);
+    }  
+    
+    //Leonardo
+    @Override
+    public Object visitPrivate(Private ast, Object obj) {
+      return(null);
+    }  
+          
+    
   // Expressions
   public Object visitArrayExpression(ArrayExpression ast, Object o) {
     ast.type.visit(this, null);

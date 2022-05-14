@@ -95,14 +95,31 @@ public class LayoutVisitor implements Visitor {
     }
 
     //Leonardo  
+  @Override
     public Object visitCase(Case ast, Object obj) {
         if(ast.B == null) {
-            return(layoutBinary("Case.com", ast.A, ast.leaAST));
+            return(layoutBinary("Casecom.", ast.A, ast.leaAST));
         }
-        return(layoutTernary("Case.com", ast.A, ast.B, ast.leaAST));
+        return(layoutTernary("Casecom.", ast.A, ast.B, ast.leaAST));
     }
     
-
+    //Leonardo   
+  @Override
+    public Object visitProcFuncs(ProcFuncs ast, Object obj) { 
+      return(layoutBinary("ProcFuncscom.", ast.PF1, ast.PF2));
+    }
+    //Leonardo
+    @Override
+    public Object visitRecursive(Recursive ast, Object obj) {
+      return(layoutUnary("Recursive.", ast.PF1));
+    }  
+    //Leonardo
+    @Override
+    public Object visitPrivate(Private ast, Object obj) {
+      return(layoutBinary("Privatecom.", ast.D1, ast.D2));
+    }
+    
+    
   // Expressions
   public Object visitArrayExpression(ArrayExpression ast, Object obj) {
     return layoutUnary("ArrayExpr.", ast.AA);

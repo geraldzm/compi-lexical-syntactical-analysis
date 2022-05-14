@@ -206,6 +206,18 @@ public class TreeVisitor implements Visitor {
     public Object visitVarInitialized(VarInitialized ast, Object obj) {
         return(createBinary("Variable Initialized", ast.I, ast.T));
     }
+    //Leonardo
+    public Object visitProcFuncs(ProcFuncs ast, Object obj) {
+        return(createBinary("Proc Funcs", ast.PF1, ast.PF2));
+    }
+    //Leonardo
+    public Object visitRecursive(Recursive ast, Object obj) {        
+        return(createUnary("Recursive", ast.PF1));
+    }      
+    //Leonardo
+    public Object visitPrivate(Private ast, Object obj) {
+        return(createBinary("Private", ast.D1, ast.D2));
+    }
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc=" Aggregates ">

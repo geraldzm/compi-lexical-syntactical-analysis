@@ -301,6 +301,29 @@ public class TableVisitor implements Visitor {
       ast.T.visit(this, null);      
       return(null);
     }
+    //Leonardo
+    @Override
+    public Object visitProcFuncs(ProcFuncs ast, Object obj) {
+      ast.PF1.visit(this, null);
+      ast.PF2.visit(this, null);      
+      return(null);
+    }
+    //Leonardo
+    @Override
+    public Object visitRecursive(Recursive ast, Object obj) {
+      ast.PF1.visit(this, null); 
+      return(null);
+    }    
+    //Leonardo
+    @Override
+    public Object visitPrivate(Private ast, Object obj) {
+      ast.D1.visit(this, null);
+      ast.D2.visit(this, null);      
+      return(null);
+    }
+    
+    
+    
   // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc=" Aggregates ">

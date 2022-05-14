@@ -634,6 +634,36 @@ public class WriterVisitor implements Visitor {
         return null;
     }
     
+    //Leonardo
+    @Override
+    public Object visitProcFuncs(ProcFuncs ast, Object obj) {        
+      writeLineHTML("<ProcFuncs>");
+      ast.PF1.visit(this, null);
+      ast.PF2.visit(this, null);    
+      writeLineHTML("</ProcFuncs>");
+      return(null);
+    }
+    
+    //Leonardo
+    @Override
+    public Object visitRecursive(Recursive ast, Object obj) {
+      writeLineHTML("<Recursive>");
+      ast.PF1.visit(this, null);
+      writeLineHTML("</Recursive>");
+      return(null);
+    }  
+    //Leonardo
+    @Override
+    public Object visitPrivate(Private ast, Object obj) {        
+      writeLineHTML("<Private>");
+      ast.D1.visit(this, null);
+      ast.D2.visit(this, null);      
+      writeLineHTML("</Private>");
+      return(null);
+    }
+    
+    
+    
     private void writeLineHTML(String line) {
         try {
             fileWriter.write(line);

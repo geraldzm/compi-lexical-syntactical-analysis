@@ -120,6 +120,9 @@ public interface Visitor {
   public abstract Object visitCase(Case ast, Object o);
   public abstract Object visitChooseCommand(ChooseCommand ast, Object o);
   public abstract Object visitVarInitialized(VarInitialized ast, Object o);
+  public abstract Object visitProcFuncs(ProcFuncs ast, Object o);
+  public abstract Object visitRecursive(Recursive ast, Object o);  
+  public abstract Object visitPrivate(Private ast, Object o);
   
   
   
