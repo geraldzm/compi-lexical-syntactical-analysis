@@ -16,7 +16,7 @@
 <SequentialCase>
 <Case>
 <CaseLiteral value="1"/>
-<CaseLiteral value="2"/>
+<CaseLiteral value="10"/>
 <CallCommand>
 <Identifier value="putint"/>
 <SingleActualParameterSequence>
@@ -29,13 +29,13 @@
 </CallCommand>
 </Case>
 <Case>
-<CaseLiteral value="3"/>
+<CaseLiteral value="11"/>
 <CallCommand>
 <Identifier value="putint"/>
 <SingleActualParameterSequence>
 <ConstActualParameter>
 <IntegerExpression>
-<IntegerLiteral value="2"/>
+<IntegerLiteral value="1"/>
 </IntegerExpression>
 </ConstActualParameter>
 </SingleActualParameterSequence>
@@ -51,7 +51,7 @@
 <SequentialCase>
 <Case>
 <CaseLiteral value="1"/>
-<CaseLiteral value="2"/>
+<CaseLiteral value="3"/>
 <CallCommand>
 <Identifier value="putint"/>
 <SingleActualParameterSequence>
@@ -64,7 +64,7 @@
 </CallCommand>
 </Case>
 <Case>
-<CaseLiteral value="3"/>
+<CaseLiteral value="5"/>
 <CallCommand>
 <Identifier value="putint"/>
 <SingleActualParameterSequence>

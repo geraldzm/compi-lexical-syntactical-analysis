@@ -157,8 +157,7 @@ public final class Checker implements Visitor {
         TypeDenoter e2Type = (TypeDenoter) ast.B.visit(this, null);
         if (! (e2Type.equals(StdEnvironment.integerType ) ||  e2Type.equals(StdEnvironment.charType ))){
              reporter.reportError("Integer or Char expression expected here", "", ast.B.position);
-        }
-        
+        }        
         if (e1Type.equals(StdEnvironment.integerType) ){             
             Integer firstE = Integer.parseInt(ast.A.spelling) + 1; 
             Integer seconE = Integer.parseInt(ast.B.spelling);
@@ -173,8 +172,7 @@ public final class Checker implements Visitor {
                 myListLitChoChIn.add(firstC);
                 firstC++;
             }  
-        }
-     
+        }     
         myListLitCho.add(ast.B);
         ast.B.visit(this, null);        
     }
@@ -187,31 +185,22 @@ public final class Checker implements Visitor {
   @Override
   public Object visitChooseCommand(ChooseCommand ast, Object o) {      
     myListLitCho.clear();
-    myListLitChoChIn.clear();
-    
+    myListLitChoChIn.clear();    
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (! (eType.equals(StdEnvironment.integerType ) ||  eType.equals(StdEnvironment.charType ))){
       reporter.reportError("Integer or Char expression expected here", "", ast.E.position);
-    }
-    
-    myListLitCho.add(ast.E);
-    
-    idTable.openScope();
-    
+    }    
+    myListLitCho.add(ast.E);    
+    idTable.openScope();    
     ast.B.visit(this, null);    
-    compareLitChoose();
-    
+    compareLitChoose();    
     if(ast.C != null) 
-        ast.C.visit(this, null);    
-    
-    idTable.closeScope();
-        
+        ast.C.visit(this, null); 
+    idTable.closeScope();        
     return null;
   }
-  // Leonardo
-  
-  public Object compareLitChoose() {  
-        
+  // Leonardo  
+  public Object compareLitChoose() {      
     Expression exp = (Expression) myListLitCho.get(0);
     TypeDenoter eType = (TypeDenoter) exp.type;
     TypeDenoter caseL;
@@ -223,11 +212,7 @@ public final class Checker implements Visitor {
                 reporter.reportError ("body of choose \"%\" has wrong type",
                                     caseL1.spelling, exp.position); 
         }             
-    }    
-              
-          
-
-            
+    }                      
     CaseLiteral caseL2;   
     TypeDenoter e1Type;    
     TypeDenoter e2Type;  
