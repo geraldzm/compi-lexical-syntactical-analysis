@@ -117,7 +117,8 @@ public interface Visitor {
   //Leonardo
   public abstract Object visitNothingCommand(NothingCommand ast, Object o);  
   public abstract Object visitCaseLiteral(CaseLiteral ast, Object o);
-  public abstract Object visitCase(Case ast, Object o);
+  public abstract Object visitCase(Case ast, Object o);  
+  public abstract Object visitSequentialCase(SequentialCase ast, Object o);
   public abstract Object visitChooseCommand(ChooseCommand ast, Object o);
   public abstract Object visitVarInitialized(VarInitialized ast, Object o);
   public abstract Object visitProcFuncs(ProcFuncs ast, Object o);

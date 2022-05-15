@@ -14,13 +14,13 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class Case extends Cases {
 
-  public Case (CaseLiteral aCasLit, CaseLiteral bCasLit, Command leaAST, SourcePosition thePosition, Cases nCase) {
+  public Case (CaseLiteral aCasLit, CaseLiteral bCasLit, Command leAST, SourcePosition thePosition) {
     super (thePosition);
   
     A = aCasLit;
     B = bCasLit;
-    C = nCase;
-    this.leaAST = leaAST;
+    leaAST = leAST;
+    duplicated = false;
   }
 
   public Object visit(Visitor v, Object o) {
@@ -29,5 +29,6 @@ public class Case extends Cases {
 
   public CaseLiteral A, B;
   public Command leaAST;  
-  public Cases C;  
+  public boolean duplicated; 
+    
 }

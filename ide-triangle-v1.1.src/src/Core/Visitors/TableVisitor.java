@@ -114,6 +114,13 @@ public class TableVisitor implements Visitor {
       return(null);
   }
   
+  // Leonardo
+  public Object visitSequentialCase(SequentialCase ast, Object o) { 
+      ast.C1.visit(this, null);
+      ast.C2.visit(this, null);      
+      return(null);
+  }
+  
   public Object visitWhileCommand(WhileCommand ast, Object o) { 
       ast.E.visit(this, null);
       ast.C.visit(this, null);

@@ -75,6 +75,12 @@ public class LayoutVisitor implements Visitor {
   public Object visitSequentialCommand(SequentialCommand ast, Object obj) {
     return layoutBinary("Seq.Com.", ast.C1, ast.C2);
   }
+  
+  //Leonardo
+  public Object visitSequentialCase(SequentialCase ast, Object o) {
+    return layoutBinary("SeqCase.Com.", ast.C1, ast.C2);
+  }
+  
 
   public Object visitWhileCommand(WhileCommand ast, Object obj) {
     return layoutBinary("WhileCom.", ast.E, ast.C);

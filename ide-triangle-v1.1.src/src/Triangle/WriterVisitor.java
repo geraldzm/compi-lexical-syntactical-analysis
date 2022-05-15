@@ -102,6 +102,15 @@ public class WriterVisitor implements Visitor {
         return null;
     }
     
+    // Leonardo
+    public Object visitSequentialCase(SequentialCase ast, Object o) {
+        writeLineHTML("<SequentialCase>");
+        ast.C1.visit(this, null);
+        ast.C2.visit(this, null);
+        writeLineHTML("</SequentialCase>");
+        return null;
+    }
+    
     public Object visitWhileCommand(WhileCommand ast, Object obj) {
         writeLineHTML("<WhileCommand>");
         ast.E.visit(this, null);
@@ -546,10 +555,7 @@ public class WriterVisitor implements Visitor {
         if(ast.B != null) {            
             ast.B.visit(this, null);
         }       
-        ast.leaAST.visit(this, null);
-        if(ast.C != null) {            
-            ast.C.visit(this, null);
-        }       
+        ast.leaAST.visit(this, null);    
         writeLineHTML("</Case>");
         return null;
     }
@@ -642,8 +648,7 @@ public class WriterVisitor implements Visitor {
       ast.PF2.visit(this, null);    
       writeLineHTML("</ProcFuncs>");
       return(null);
-    }
-    
+    }    
     //Leonardo
     @Override
     public Object visitRecursive(Recursive ast, Object obj) {

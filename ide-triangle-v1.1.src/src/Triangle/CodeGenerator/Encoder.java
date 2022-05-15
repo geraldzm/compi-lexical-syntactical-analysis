@@ -84,7 +84,13 @@ public final class Encoder implements Visitor {
     ast.C2.visit(this, o);
     return null;
   }
-
+  //Leonardo
+  public Object visitSequentialCase(SequentialCase ast, Object o) {
+    ast.C1.visit(this, o);
+    ast.C2.visit(this, o);
+    return null;
+  }
+  
   public Object visitWhileCommand(WhileCommand ast, Object o) {
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;

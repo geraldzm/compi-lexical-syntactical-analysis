@@ -1,0 +1,93 @@
+<?xml version="1.0" standalone="yes"?>
+<Program>
+<LetCommand>
+<ConstDeclaration>
+<Identifier value="k"/>
+<IntegerExpression>
+<IntegerLiteral value="8"/>
+</IntegerExpression>
+</ConstDeclaration>
+<ChooseCommand>
+<VnameExpression>
+<SimpleVname>
+<Identifier value="k"/>
+</SimpleVname>
+</VnameExpression>
+<SequentialCase>
+<Case>
+<CaseLiteral value="1"/>
+<CaseLiteral value="2"/>
+<CallCommand>
+<Identifier value="putint"/>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</Case>
+<Case>
+<CaseLiteral value="3"/>
+<CallCommand>
+<Identifier value="putint"/>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<IntegerExpression>
+<IntegerLiteral value="2"/>
+</IntegerExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</Case>
+</SequentialCase>
+<ChooseCommand>
+<VnameExpression>
+<SimpleVname>
+<Identifier value="k"/>
+</SimpleVname>
+</VnameExpression>
+<SequentialCase>
+<Case>
+<CaseLiteral value="1"/>
+<CaseLiteral value="2"/>
+<CallCommand>
+<Identifier value="putint"/>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<IntegerExpression>
+<IntegerLiteral value="1"/>
+</IntegerExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</Case>
+<Case>
+<CaseLiteral value="3"/>
+<CallCommand>
+<Identifier value="putint"/>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<IntegerExpression>
+<IntegerLiteral value="2"/>
+</IntegerExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</Case>
+</SequentialCase>
+<CallCommand>
+<Identifier value="put"/>
+<SingleActualParameterSequence>
+<ConstActualParameter>
+<CharacterExpression>
+<CharacterLiteral value="'E'"/>
+</CharacterExpression>
+</ConstActualParameter>
+</SingleActualParameterSequence>
+</CallCommand>
+</ChooseCommand>
+</ChooseCommand>
+</LetCommand>
+</Program>

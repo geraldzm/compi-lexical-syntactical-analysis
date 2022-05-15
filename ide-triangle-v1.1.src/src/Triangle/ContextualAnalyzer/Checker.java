@@ -18,9 +18,13 @@ import Triangle.AbstractSyntaxTrees.*;
 import Triangle.ErrorReporter;
 import Triangle.StdEnvironment;
 import Triangle.SyntacticAnalyzer.SourcePosition;
+import java.util.ArrayList;
 
 public final class Checker implements Visitor {
 
+  // Leonardo variable para comprobar literales dentro de choose
+    ArrayList<Object> myListLitCho = new ArrayList<Object>();    
+    ArrayList<Object> myListLitChoChIn = new ArrayList<Object>();
   // Commands
 
   // Always returns null. Does not use the given object.
@@ -93,6 +97,13 @@ public final class Checker implements Visitor {
     ast.C2.visit(this, null);
     return null;
   }
+  
+  //Leonardo
+  public Object visitSequentialCase(SequentialCase ast, Object o) {
+    ast.C1.visit(this, null);
+    ast.C2.visit(this, null);
+    return null;
+  }
 
   public Object visitWhileCommand(WhileCommand ast, Object o) {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
@@ -137,28 +148,127 @@ public final class Checker implements Visitor {
   //Leonardo
   @Override
   public Object visitCase(Case ast, Object o) {
-    ast.A.visit(this, null);
-    if(ast.B != null) 
-        ast.B.visit(this, null);    
+    TypeDenoter e1Type = (TypeDenoter) ast.A.visit(this, null);
+    if (! (e1Type.equals(StdEnvironment.integerType ) ||  e1Type.equals(StdEnvironment.charType ))){
+      reporter.reportError("Integer or Char expression expected here", "", ast.A.position);
+    }
+    myListLitCho.add(ast.A);
+    if(ast.B != null) {        
+        TypeDenoter e2Type = (TypeDenoter) ast.B.visit(this, null);
+        if (! (e2Type.equals(StdEnvironment.integerType ) ||  e2Type.equals(StdEnvironment.charType ))){
+             reporter.reportError("Integer or Char expression expected here", "", ast.B.position);
+        }
+        
+        if (e1Type.equals(StdEnvironment.integerType) ){             
+            Integer firstE = Integer.parseInt(ast.A.spelling) + 1; 
+            Integer seconE = Integer.parseInt(ast.B.spelling);
+            while ( firstE < seconE){
+                myListLitChoChIn.add(firstE);
+                firstE++;
+            }   
+        }else{            
+            char firstC = (char) ((ast.A.spelling).charAt(0) + 1);
+            char seconC = (ast.B.spelling).charAt(0);
+            while ( firstC < seconC){
+                myListLitChoChIn.add(firstC);
+                firstC++;
+            }  
+        }
+     
+        myListLitCho.add(ast.B);
+        ast.B.visit(this, null);        
+    }
     ast.leaAST.visit(this, null);
+            
     return null;
   }
-    //Leonardo
+  
+  //Leonardo --------------------------------------------------------------------99999999999999999999999999999
   @Override
   public Object visitChooseCommand(ChooseCommand ast, Object o) {      
+    myListLitCho.clear();
+    myListLitChoChIn.clear();
+    
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-    if (! eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", ast.E.position);
-    ast.E.visit(this, null); 
-    ast.B.visit(this, null);
+    if (! (eType.equals(StdEnvironment.integerType ) ||  eType.equals(StdEnvironment.charType ))){
+      reporter.reportError("Integer or Char expression expected here", "", ast.E.position);
+    }
+    
+    myListLitCho.add(ast.E);
+    
+    idTable.openScope();
+    
+    ast.B.visit(this, null);    
+    compareLitChoose();
+    
     if(ast.C != null) 
-        ast.C.visit(this, null);
+        ast.C.visit(this, null);    
+    
+    idTable.closeScope();
+        
     return null;
   }
+  // Leonardo
   
-  
-  
-  
+  public Object compareLitChoose() {  
+        
+    Expression exp = (Expression) myListLitCho.get(0);
+    TypeDenoter eType = (TypeDenoter) exp.type;
+    TypeDenoter caseL;
+    CaseLiteral caseL1;  
+    for (int i = 1; i < myListLitCho.size(); i++) {        
+        caseL1 = (CaseLiteral) myListLitCho.get(i);
+        caseL = (TypeDenoter) caseL1.visit(this, null);
+        if (! eType.equals(caseL)){
+                reporter.reportError ("body of choose \"%\" has wrong type",
+                                    caseL1.spelling, exp.position); 
+        }             
+    }    
+              
+          
+
+            
+    CaseLiteral caseL2;   
+    TypeDenoter e1Type;    
+    TypeDenoter e2Type;  
+    Object listO;    
+    Integer elementI;
+    char elementC;
+    Integer elementI2;
+    char elementC2;
+    for (int i = 1; i < myListLitCho.size(); i++) { 
+        caseL1 = (CaseLiteral) myListLitCho.get(i);
+        e1Type = (TypeDenoter) caseL1.visit(this, null);        
+        for (int j = i+1; j < myListLitCho.size(); j++) {                 
+            caseL2 = (CaseLiteral) myListLitCho.get(j);
+            e2Type = (TypeDenoter) caseL2.visit(this, null); 
+            if (! e1Type.equals(e2Type))
+                reporter.reportError ("incompatible argument types for \"%\"",
+                                   caseL2.spelling, caseL2.position);            
+            if (caseL1.spelling.equals(caseL2.spelling))
+                reporter.reportError ("Literals \"%\" can not be equals",
+                                   caseL1.spelling+" and "+caseL2.spelling , caseL2.position);            
+        }  
+        for (int j = 0; j < myListLitChoChIn.size(); j++) {                 
+            listO = myListLitChoChIn.get(j);
+            
+            try{
+                elementI =(Integer) listO;
+                elementI2 = Integer.parseInt(caseL1.spelling);
+                if (elementI2 == elementI)
+                reporter.reportError ("Literals \"%\" can not be equals",
+                                   elementI+" and "+elementI2, caseL1.position); 
+            }catch(Exception e){
+                elementC =(char) listO;                
+                elementC2 = (caseL1.spelling).charAt(0);
+                if (elementC2 == elementC)
+                reporter.reportError ("Literals \"%\" can not be equals",
+                                   elementC+" and "+elementC2, caseL1.position);
+            }                                
+        }
+    }
+    return null;
+  }
   // Expressions
 
   // Returns the TypeDenoter denoting the type of the expression. Does

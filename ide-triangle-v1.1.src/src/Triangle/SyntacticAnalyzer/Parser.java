@@ -682,11 +682,11 @@ public class Parser {
 
     SourcePosition declarationPos = new SourcePosition();
     start(declarationPos);
-    // Leonardo
+    // Leonardo y David
     declarationAST = parseCompoundDeclaration();
     while (currentToken.kind == Token.SEMICOLON) {
       acceptIt();
-      // Leonardo
+      // Leonardo y David
       Declaration d2AST = parseCompoundDeclaration();
       finish(declarationPos);
       declarationAST = new SequentialDeclaration(declarationAST, d2AST,
@@ -1200,44 +1200,39 @@ public class Parser {
   
   Cases parseCases() throws SyntaxError {
     Cases casesAST = null; // in case there's a syntactic error
-
     SourcePosition casesPos = new SourcePosition();
-
-    start(casesPos);
+    start(casesPos);    
     casesAST = parseCase();
-    
+    while (currentToken.kind == Token.WHEN) {
+      Cases cases2AST = parseCase();
+      finish(casesPos);
+      casesAST = new SequentialCase(casesAST, cases2AST, casesPos);
+    }
     return casesAST;
   }
     
   Cases parseCase() throws SyntaxError {
     Cases caseAST = null; // in case there's a syntactic error
-
     SourcePosition casePos = new SourcePosition();
-
-    start(casePos);
-    
+    start(casePos);    
     switch (currentToken.kind) {
      case Token.WHEN:
       {
-        while(currentToken.kind == Token.WHEN) {
-            acceptIt();
-            CaseLiteral aCasLit = parseCaseLiteral();
-
-            if(currentToken.kind == Token.DOUBLEDOT){
-                acceptIt();            
-                CaseLiteral bCasLit = parseCaseLiteral();
-                accept(Token.THEN);            
-                Command leaAST = parseCommand();
-                caseAST = new Case( aCasLit, bCasLit, leaAST, casePos, caseAST);
-            }else{
-                accept(Token.THEN);            
-                Command leaAST = parseCommand();
-                caseAST = new Case( aCasLit, null, leaAST, casePos, caseAST);
-            }
-        }
+        acceptIt();
+        CaseLiteral aCasLit = parseCaseLiteral();
+        if(currentToken.kind == Token.DOUBLEDOT){
+            acceptIt();            
+            CaseLiteral bCasLit = parseCaseLiteral();
+            accept(Token.THEN);            
+            Command leaAST = parseCommand();
+            caseAST = new Case( aCasLit, bCasLit, leaAST, casePos);
+        }else{
+            accept(Token.THEN);            
+            Command leaAST = parseCommand();
+            caseAST = new Case( aCasLit, null, leaAST, casePos);
+        }        
       }
       break;
-
     default:
       syntacticError("\"%\" cannot start a case",
         currentToken.spelling);

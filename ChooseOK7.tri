@@ -1,0 +1,31 @@
+let
+
+	const k ~ 8
+in 
+
+  choose k from
+
+  when 1 .. 2 then putint (1)
+
+  when 3 then putint(2)
+
+  else 
+
+	 choose k from
+
+  	 when 1 .. 3 then putint (1)
+
+  	 when 2 then putint(2)
+
+  	 else 
+
+		put ('E')
+
+  	 end
+
+  end
+
+end
+
+
+! OK

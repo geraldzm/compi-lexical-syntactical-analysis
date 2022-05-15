@@ -61,6 +61,11 @@ public class TreeVisitor implements Visitor {
         return(createBinary("Sequential Command", ast.C1, ast.C2));
     }
     
+    // Leonardo
+    public Object visitSequentialCase(SequentialCase ast, Object o) {
+        return(createBinary("Sequential Case", ast.C1, ast.C2));
+    }
+    
     //Gerald - comentado por Leonardo Farina
     public Object visitWhileCommand(WhileCommand ast, Object obj) {// gerald zamora
         if(ast.B == null) {
@@ -108,14 +113,8 @@ public class TreeVisitor implements Visitor {
     //Leonardo
     @Override
     public Object visitCase(Case ast, Object obj) {
-        if(ast.B == null) {            
-            if(ast.C != null) {
-                return(createN("Case", ast.A, ast.leaAST,ast.C));
-            }
+        if(ast.B == null) { 
             return(createN("Case", ast.A, ast.leaAST));
-        }
-        if(ast.C != null) {
-            return(createN("Case", ast.A, ast.B, ast.leaAST, ast.C));
         }
         return(createTernary("Case", ast.A, ast.B, ast.leaAST));
     }
