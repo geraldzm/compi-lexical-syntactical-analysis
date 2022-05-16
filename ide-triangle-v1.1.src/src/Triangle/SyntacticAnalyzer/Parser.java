@@ -265,7 +265,7 @@ public class Parser {
         accept(Token.THEN);
         Command c1AST = parseCommand();
 
-        while(currentToken.kind == Token.ELIF) {
+        while(currentToken.kind == Token.ELSIF) { // Leonardo
           acceptIt();
           Expression elifExp = parseExpression();
           accept(Token.THEN);
@@ -417,23 +417,6 @@ public class Parser {
       }
       break;
       
-    case Token.DOUBLEDOT:
-    case Token.FROM:
-    case Token.DO:
-    case Token.SEMICOLON:
-    case Token.END:
-    case Token.ELSE:
-    case Token.IN:
-      case Token.LEAVE:
-      case Token.ELIF:
-    case Token.EOT:
-
-      //System.out.println("AHORA PASA: " + Token.toKind(currentToken));
-      //System.out.println("AHORA PASA: " + Token.spell(35));
-      finish(commandPos);
-      commandAST = new NothingCommand(commandPos);
-      break;
-
     default:
       syntacticError("\"%\" cannot start a command",
         currentToken.spelling);
@@ -1244,7 +1227,7 @@ public class Parser {
   CaseLiteral parseCaseLiteral() throws SyntaxError {
     CaseLiteral CL = null;
 
-    if (currentToken.kind == Token.INTLITERAL || currentToken.kind == Token.IDENTIFIER  ) {
+    if (currentToken.kind == Token.INTLITERAL || currentToken.kind == Token.CHARLITERAL  ) {
       previousTokenPosition = currentToken.position;
       String spelling = currentToken.spelling;
       CL = new CaseLiteral(spelling, previousTokenPosition);

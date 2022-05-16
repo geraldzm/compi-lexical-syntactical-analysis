@@ -75,8 +75,8 @@ final class Token extends Object {
     CHOOSE              = 7, // Cambio Leonardo Farina
     CONST		= 8,
     DO			= 9,
-    ELIF		= 10,  
-    ELSE		= 11,
+    ELSE		= 10,  
+    ELSIF		= 11, //Leonardo
     END			= 12,
     FOR                 = 13, //Agregamos FOR Stephanie Quiros
     FROM                = 14, //Agregamos FROM Stephanie Quiros
@@ -134,8 +134,8 @@ final class Token extends Object {
     "choose", // Cambio Leonardo Farina agragamos "nothing"
     "const",
     "do",
-    "elif", // Cambio Gerald Zamora
-    "else",
+    "else",  // Recambio Leonardo  
+    "elsif", // Cambio Gerald Zamora Recambio Leonardo
     "end",
     "for", //Agregamos for Stephanie Quiros
     "from", //Agregamos from Stephanie Quiros
