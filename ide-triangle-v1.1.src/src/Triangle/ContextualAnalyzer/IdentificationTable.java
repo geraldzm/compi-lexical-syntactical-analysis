@@ -104,5 +104,20 @@ public final class IdentificationTable {
 
     return attr;
   }
-
+  
+  //Leonardo
+  public IdEntry getLastEntry () {
+        return this.latest;
+  }
+  public void JumpEntrys (IdEntry firstEntry, IdEntry secondEntry) {
+    IdEntry entry, local;
+    local = null;
+    entry = this.latest;
+    while (entry != secondEntry) {
+      local = entry;
+      entry = local.previous;
+    }            
+    entry = local;   
+    entry.previous = firstEntry;
+  }
 }

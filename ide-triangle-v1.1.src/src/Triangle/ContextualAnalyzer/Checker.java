@@ -25,6 +25,11 @@ public final class Checker implements Visitor {
   // Leonardo variable para comprobar literales dentro de choose
     ArrayList<Object> myListLitCho = new ArrayList<Object>();    
     ArrayList<Object> myListLitChoChIn = new ArrayList<Object>();
+   
+  // Leonardo variable para comprobar identifiers dentro de recursive
+    ArrayList<Object> myListIdFunc = new ArrayList<Object>();    
+    
+    
   // Commands
 
   // Always returns null. Does not use the given object.
@@ -181,7 +186,7 @@ public final class Checker implements Visitor {
     return null;
   }
   
-  //Leonardo --------------------------------------------------------------------99999999999999999999999999999
+  //Leonardo 
   @Override
   public Object visitChooseCommand(ChooseCommand ast, Object o) {      
     myListLitCho.clear();
@@ -459,20 +464,23 @@ public final class Checker implements Visitor {
     //Leonardo
     public Object visitVarInitialized(VarInitialized ast, Object obj) {
         TypeDenoter eType = (TypeDenoter) ast.T.visit(this, null);
-        if (! eType.equals(StdEnvironment.booleanType))
-          reporter.reportError("Boolean expression expected here", "", ast.T.position);
-        ast.I.visit(this, null); 
-        ast.T.visit(this, null);
+        Identifier ident = (Identifier) ast.I.visit(this, null); 
+        ident.type = eType;
+        
+        idTable.enter(ast.I.spelling, ast);
+        if (ast.duplicated)
+          reporter.reportError ("identifier \"%\" already declared",
+                                ast.I.spelling, ast.position);        
         return null;
     }
     
     //Leonardo
     public Object visitProcFuncs(ProcFuncs ast, Object obj) {   
       ast.PF1.visit(this, null);
-      ast.PF2.visit(this, null);    
+      ast.PF2.visit(this, null);          
       return(null);
     }
-    //Leonardo
+    //Leonardo--------------------------------------------------------------------99999999999999999999999999999
     @Override
     public Object visitRecursive(Recursive ast, Object obj) {
       ast.PF1.visit(this, null);
@@ -482,8 +490,11 @@ public final class Checker implements Visitor {
     //Leonardo
     @Override
     public Object visitPrivate(Private ast, Object obj) {
-      ast.D1.visit(this, null);
-      ast.D2.visit(this, null);      
+      Object lastEntryProg = idTable.getLastEntry ();
+      ast.D1.visit(this, null);  
+      Object lastEntryDec1 = idTable.getLastEntry ();
+      ast.D2.visit(this, null);
+      idTable.JumpEntrys((IdEntry)lastEntryProg, (IdEntry)lastEntryDec1);      
       return(null);
     }
     
