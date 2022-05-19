@@ -26,8 +26,10 @@ public final class Checker implements Visitor {
     ArrayList<Object> myListLitCho = new ArrayList<Object>();    
     ArrayList<Object> myListLitChoChIn = new ArrayList<Object>();
    
-  // Leonardo variable para comprobar identifiers dentro de recursive
-    ArrayList<Object> myListIdFunc = new ArrayList<Object>();    
+  // Leonardo variables para recursive
+    boolean checkRecursive = true;
+    boolean checkRecursive2 = true;    
+    boolean checkRecursive3 = true;
     
     
   // Commands
@@ -405,30 +407,57 @@ public final class Checker implements Visitor {
   }
 
   public Object visitFuncDeclaration(FuncDeclaration ast, Object o) {
-    ast.T = (TypeDenoter) ast.T.visit(this, null);
-    idTable.enter (ast.I.spelling, ast); // permits recursion
-    if (ast.duplicated)
-      reporter.reportError ("identifier \"%\" already declared",
-                            ast.I.spelling, ast.position);
-    idTable.openScope();
-    ast.FPS.visit(this, null);
-    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-    idTable.closeScope();
-    if (! ast.T.equals(eType))
-      reporter.reportError ("body of function \"%\" has wrong type",
-                            ast.I.spelling, ast.E.position);
+    if(checkRecursive3){
+        if(checkRecursive){
+            if(checkRecursive2){
+                ast.T = (TypeDenoter) ast.T.visit(this, null);
+                idTable.enter (ast.I.spelling, ast); // permits recursion
+                if (ast.duplicated)
+                  reporter.reportError ("identifier \"%\" already declared",
+                                        ast.I.spelling, ast.position);
+            }
+            idTable.openScope();
+            ast.FPS.visit(this, null);
+            TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+            idTable.closeScope();
+            if (! ast.T.equals(eType))
+              reporter.reportError ("body of function \"%\" has wrong type",
+                                    ast.I.spelling, ast.E.position);
+        }else{
+                ast.T = (TypeDenoter) ast.T.visit(this, null);   
+                idTable.enter (ast.I.spelling, ast); // permits recursion
+                if (ast.duplicated)
+                  reporter.reportError ("identifier \"%\" already declared",
+                                        ast.I.spelling, ast.position);
+        }  
+    }else{
+        ast.FPS.visit(this, null);
+    }
     return null;
   }
 
   public Object visitProcDeclaration(ProcDeclaration ast, Object o) {
-    idTable.enter (ast.I.spelling, ast); // permits recursion
-    if (ast.duplicated)
-      reporter.reportError ("identifier \"%\" already declared",
-                            ast.I.spelling, ast.position);
-    idTable.openScope();
-    ast.FPS.visit(this, null);
-    ast.C.visit(this, null);
-    idTable.closeScope();
+    if(checkRecursive3){
+        if(checkRecursive){
+            if(checkRecursive2){
+                idTable.enter (ast.I.spelling, ast); // permits recursion
+                if (ast.duplicated)
+                  reporter.reportError ("identifier \"%\" already declared",
+                                        ast.I.spelling, ast.position);
+            }
+            idTable.openScope();
+            ast.FPS.visit(this, null);
+            ast.C.visit(this, null);
+            idTable.closeScope();
+        }else{
+            idTable.enter (ast.I.spelling, ast); // permits recursion
+            if (ast.duplicated)
+                reporter.reportError ("identifier \"%\" already declared",
+                                      ast.I.spelling, ast.position);
+        }
+    }else{
+        ast.FPS.visit(this, null);
+    }
     return null;
   }
 
@@ -464,9 +493,6 @@ public final class Checker implements Visitor {
     //Leonardo
     public Object visitVarInitialized(VarInitialized ast, Object obj) {
         TypeDenoter eType = (TypeDenoter) ast.T.visit(this, null);
-        Identifier ident = (Identifier) ast.I.visit(this, null); 
-        ident.type = eType;
-        
         idTable.enter(ast.I.spelling, ast);
         if (ast.duplicated)
           reporter.reportError ("identifier \"%\" already declared",
@@ -480,10 +506,20 @@ public final class Checker implements Visitor {
       ast.PF2.visit(this, null);          
       return(null);
     }
-    //Leonardo--------------------------------------------------------------------99999999999999999999999999999
+    //Leonardo
     @Override
     public Object visitRecursive(Recursive ast, Object obj) {
-      ast.PF1.visit(this, null);
+      checkRecursive = false;
+      checkRecursive2 = false;
+      ast.PF1.visit(this, null); // Ingresamos los identifacadores a la tabla
+      checkRecursive = true;
+        
+      checkRecursive3 = false;    
+      ast.PF1.visit(this, null); // Recorremos sus parametros pero no los definimos en la tabla  
+      checkRecursive3 = true;
+      
+      ast.PF1.visit(this, null); // Recorremos sus parametros y los definimos en la tabla  
+      checkRecursive2 = true;
       return(null);
     }  
     
@@ -544,9 +580,13 @@ public final class Checker implements Visitor {
 
   // Always returns null. Does not use the given object.
 
-  public Object visitConstFormalParameter(ConstFormalParameter ast, Object o) {
+  public Object visitConstFormalParameter(ConstFormalParameter ast, Object o) {          
     ast.T = (TypeDenoter) ast.T.visit(this, null);
     idTable.enter(ast.I.spelling, ast);
+    //Leonardo
+    if(!checkRecursive3){
+        ast.duplicated = false;
+    }
     if (ast.duplicated)
       reporter.reportError ("duplicated formal parameter \"%\"",
                             ast.I.spelling, ast.position);
@@ -578,10 +618,13 @@ public final class Checker implements Visitor {
 
   public Object visitVarFormalParameter(VarFormalParameter ast, Object o) {
     ast.T = (TypeDenoter) ast.T.visit(this, null);
-    idTable.enter (ast.I.spelling, ast);
-    if (ast.duplicated)
-      reporter.reportError ("duplicated formal parameter \"%\"",
-                            ast.I.spelling, ast.position);
+    //Leonardo
+    if(checkRecursive3){
+        idTable.enter (ast.I.spelling, ast);
+        if (ast.duplicated)
+          reporter.reportError ("duplicated formal parameter \"%\"",
+                                ast.I.spelling, ast.position);
+    }
     return null;
   }
 
@@ -607,13 +650,18 @@ public final class Checker implements Visitor {
   public Object visitConstActualParameter(ConstActualParameter ast, Object o) {
     FormalParameter fp = (FormalParameter) o;
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-
-    if (! (fp instanceof ConstFormalParameter))
-      reporter.reportError ("const actual parameter not expected here", "",
-                            ast.position);
-    else if (! eType.equals(((ConstFormalParameter) fp).T))
-      reporter.reportError ("wrong type for const actual parameter", "",
-                            ast.E.position);
+    
+    //Leonardo
+    if(checkRecursive2 ){
+        if (! (fp instanceof ConstFormalParameter)){
+          reporter.reportError ("const actual parameter not expected here", "",
+                                ast.position);
+        }
+        else if (! eType.equals(((ConstFormalParameter) fp).T)){   
+            reporter.reportError ("wrong type for const actual parameter", "",
+                                  ast.E.position);
+        }
+    }
     return null;
   }
 
@@ -732,8 +780,14 @@ public final class Checker implements Visitor {
   public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object o) {
     ast.T = (TypeDenoter) ast.T.visit(this, null);
     //Leonardo
-    if ((Integer.valueOf(ast.IL.spelling).intValue()) == 0 || Integer.valueOf(ast.IL2.spelling).intValue() == 0)
+    if(ast.IL2 != null){
+        if ( Integer.valueOf(ast.IL2.spelling).intValue() == 0)
+          reporter.reportError ("arrays must not be empty", "", ast.IL2.position);
+    }
+    
+    if ((Integer.valueOf(ast.IL.spelling).intValue()) == 0)
       reporter.reportError ("arrays must not be empty", "", ast.IL.position);
+    
     return ast;
   }
 
@@ -870,6 +924,11 @@ public final class Checker implements Visitor {
       } else if (binding instanceof VarFormalParameter) {
         ast.type = ((VarFormalParameter) binding).T;
         ast.variable = true;
+      // Leonardo
+      } else if (binding instanceof VarInitialized) {
+        Expression exType= ((VarInitialized) binding).T;
+        ast.type = exType.type;
+        ast.variable = true;      
       } else
         reporter.reportError ("\"%\" is not a const or var identifier",
                               ast.I.spelling, ast.I.position);
