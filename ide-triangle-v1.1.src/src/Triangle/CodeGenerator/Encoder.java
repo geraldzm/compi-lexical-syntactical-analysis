@@ -112,6 +112,11 @@ public final class Encoder implements Visitor {
   }
 
   @Override
+  public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
+    return null;
+  }
+
+  @Override
   public Object visitDoWhileCommand(DoWhileCommand ast, Object o) {
     return null;
   }

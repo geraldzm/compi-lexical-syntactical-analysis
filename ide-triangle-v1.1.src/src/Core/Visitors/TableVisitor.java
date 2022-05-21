@@ -132,6 +132,11 @@ public class TableVisitor implements Visitor {
     public Object visitUntilCommand(UntilCommand ast, Object o) {
         return null;
     }
+
+    @Override
+    public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
+        return null;
+    }
     // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc=" Expressions ">

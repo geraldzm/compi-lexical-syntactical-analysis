@@ -90,8 +90,13 @@ public class LayoutVisitor implements Visitor {
   public Object visitUntilCommand(UntilCommand ast, Object o) {
     return null;
   }
-  
-    //Leonardo
+
+  @Override
+  public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
+    return null;
+  }
+
+  //Leonardo
     @Override
     public Object visitChooseCommand(ChooseCommand ast, Object o) {
         if(ast.C == null) {

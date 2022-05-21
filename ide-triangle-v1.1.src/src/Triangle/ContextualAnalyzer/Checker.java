@@ -112,46 +112,143 @@ public final class Checker implements Visitor {
     return null;
   }
 
-  public Object visitWhileCommand(WhileCommand ast, Object o) {
+  public Object visitWhileCommand(WhileCommand ast, Object o) { // Gerald
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (! eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+        reporter.reportError("Boolean expression expected here", "", ast.E.position);
+
     ast.C.visit(this, null);
-    return null;
-  }
-
-  @Override
-  public Object visitUntilCommand(UntilCommand ast, Object o) {
-    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-    if (! eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", ast.E.position);
-    ast.C.visit(this, null);
-    return null;
-  }
-
-  @Override
-  public Object visitDoWhileCommand(DoWhileCommand ast, Object o) { // gerald zamora
-    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-    if (! eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", ast.E.position);
-
-    ast.A.visit(this, null);
     if(ast.B != null) ast.B.visit(this, null);
+
     return null;
   }
+
 
   @Override
-  public Object visitDoUntilCommand(DoUntilCommand ast, Object o) { // gerald zamora
-    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-    if (! eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+  public Object visitUntilCommand(UntilCommand ast, Object o) { // Gerald
+      TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+      if (! eType.equals(StdEnvironment.booleanType))
+          reporter.reportError("Boolean expression expected here", "", ast.E.position);
 
-    ast.A.visit(this, null);
-    if(ast.B != null) ast.B.visit(this, null);
-    return null;
+      ast.C.visit(this, null);
+      if(ast.B != null) ast.B.visit(this, null);
+
+      return null;
   }
-  
-  
+
+    @Override
+    public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {//Stephanie
+        idTable.enter (ast.I.spelling, ast);
+        if (ast.duplicated)
+            reporter.reportError ("identifier \"%\" already declared",
+                    ast.I.spelling, ast.position);
+
+        return null;
+    }
+
+    @Override
+    public Object visitDoWhileCommand(DoWhileCommand ast, Object o) { // Gerald
+        ast.A.visit(this, null);
+
+        TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+        if (! eType.equals(StdEnvironment.booleanType))
+            reporter.reportError("Boolean expression expected here", "", ast.E.position);
+
+        if(ast.B != null) ast.B.visit(this, null);
+        return null;
+    }
+
+    @Override
+    public Object visitDoUntilCommand(DoUntilCommand ast, Object o) { // Gerald
+        ast.A.visit(this, null);
+
+        TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+        if (! eType.equals(StdEnvironment.booleanType))
+            reporter.reportError("Boolean expression expected here", "", ast.E.position);
+
+        if(ast.B != null) ast.B.visit(this, null);
+        return null;
+    }
+
+    @Override
+    public Object visitForDoCommand(ForDoCommand ast, Object o) { // Stephanie Quiros
+
+        TypeDenoter e1Type = (TypeDenoter) ast.E.visit(this, null);
+        TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
+        idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
+        TypeDenoter idType = (TypeDenoter) ast.I.visit(this, null);
+        Declaration id = new ForVarDeclaration(ast.I,idType,ast.E1,ast.I.position);
+
+
+        if (! (e1Type.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expression expected here", "", ast.E.position);
+        else if (! (e2Type.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expression expected here", "", ast.E1.position);
+        else if (! (idType.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expected here", "", ast.I.position);
+
+        idTable.enter(ast.I.spelling, id);
+        ast.C.visit(this, null);
+        idTable.closeScope();
+        return null;
+    }
+
+    @Override
+    public Object visitForUntilCommand(ForUntilCommand ast, Object o) { // Stephanie Quiros
+
+        TypeDenoter e1Type = (TypeDenoter) ast.E.visit(this, null);
+        TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
+
+        idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
+        TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
+        TypeDenoter idType = (TypeDenoter) ast.I.visit(this, null);
+        Declaration id = new ForVarDeclaration(ast.I,idType,ast.E1,ast.I.position);
+
+
+        if (! (e1Type.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expression expected here", "", ast.E.position);
+        else if (! (e2Type.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expression expected here", "", ast.E1.position);
+        else if (! (e3Type.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expression expected here", "", ast.E3.position);
+        else if (! (idType.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expected here", "", ast.I.position);
+
+        idTable.enter(ast.I.spelling, id);
+        ast.C.visit(this, null);
+        if(ast.leaveE != null) ast.leaveE.visit(this, null);
+        idTable.closeScope();
+        return null;
+    }
+
+    @Override
+    public Object visitForWhileCommand(ForWhileCommand ast, Object o) { // Stephanie Quiros
+
+        TypeDenoter e1Type = (TypeDenoter) ast.E.visit(this, null);
+        TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
+
+        idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
+        TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
+        TypeDenoter idType = (TypeDenoter) ast.I.visit(this, null);
+        Declaration id = new ForVarDeclaration(ast.I,idType,ast.E1,ast.I.position);
+
+
+        if (! (e1Type.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expression expected here", "", ast.E.position);
+        else if (! (e2Type.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expression expected here", "", ast.E1.position);
+        else if (! (e3Type.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expression expected here", "", ast.E3.position);
+        else if (! (idType.equals(StdEnvironment.integerType)))
+            reporter.reportError("Integer expected here", "", ast.I.position);
+
+        idTable.enter(ast.I.spelling, id);
+        ast.C.visit(this, null);
+        if(ast.leaveE != null) ast.leaveE.visit(this, null);
+        idTable.closeScope();
+        return null;
+    }
+
   //Leonardo
   @Override
   public Object visitCase(Case ast, Object o) {
@@ -247,11 +344,11 @@ public final class Checker implements Visitor {
             try{
                 elementI =(Integer) listO;
                 elementI2 = Integer.parseInt(caseL1.spelling);
-                if (elementI2 == elementI)
+                if (elementI2.equals(elementI))
                 reporter.reportError ("Literals \"%\" can not be equals",
                                    elementI+" and "+elementI2, caseL1.position); 
             }catch(Exception e){
-                elementC =(char) listO;                
+                elementC =(char) listO;
                 elementC2 = (caseL1.spelling).charAt(0);
                 if (elementC2 == elementC)
                 reporter.reportError ("Literals \"%\" can not be equals",
@@ -268,10 +365,10 @@ public final class Checker implements Visitor {
 
   public Object visitArrayExpression(ArrayExpression ast, Object o) {
     TypeDenoter elemType = (TypeDenoter) ast.AA.visit(this, null);
-    IntegerLiteral il = new IntegerLiteral(new Integer(ast.AA.elemCount).toString(),
+    IntegerLiteral il = new IntegerLiteral(Integer.toString(ast.AA.elemCount),
                                            ast.position);
     //Leonardo
-    IntegerLiteral il2 = new IntegerLiteral(new Integer(ast.AA.elemCount).toString(),
+    IntegerLiteral il2 = new IntegerLiteral(Integer.toString(ast.AA.elemCount),
                                            ast.position);
     ast.type = new ArrayTypeDenoter(il,il2, elemType, ast.position);
     return ast.type;
@@ -959,38 +1056,6 @@ public final class Checker implements Visitor {
     return null;
   }
 
-  @Override
-  public Object visitForDoCommand(ForDoCommand ast, Object o) { // gerald zamora
-    ast.I.visit(this, null);
-    ast.E.visit(this, null);
-    ast.E1.visit(this, null);
-    ast.C.visit(this, null);
-    if(ast.leaveC != null) ast.leaveC.visit(this, null);
-    return null;
-  }
-
-  @Override
-  public Object visitForWhileCommand(ForWhileCommand ast, Object o) {// gerald zamora
-
-    ast.I.visit(this, null);
-    ast.E.visit(this, null);
-    ast.E1.visit(this, null);
-    ast.E3.visit(this, null);
-    ast.C.visit(this, null);
-    if(ast.leaveE != null) ast.leaveE.visit(this, null);
-    return null;
-  }
-
-  @Override
-  public Object visitForUntilCommand(ForUntilCommand ast, Object o) {// gerald zamora
-    ast.I.visit(this, null);
-    ast.E.visit(this, null);
-    ast.E1.visit(this, null);
-    ast.E3.visit(this, null);
-    ast.C.visit(this, null);
-    if(ast.leaveE != null) ast.leaveE.visit(this, null);
-    return null;
-  }
 
   // Checks whether the source program, represented by its AST, satisfies the
   // language's scope rules and type rules.

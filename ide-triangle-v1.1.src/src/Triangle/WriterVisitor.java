@@ -135,6 +135,12 @@ public class WriterVisitor implements Visitor {
         writeLineHTML("</UntilCommand>");
         return null;
     }
+
+    @Override
+    public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
+        return null;
+    }
+
     //Leonardo
         public Object visitChooseCommand(ChooseCommand ast, Object o) {
         writeLineHTML("<ChooseCommand>");

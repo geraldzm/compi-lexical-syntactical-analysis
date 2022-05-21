@@ -84,6 +84,11 @@ public class TreeVisitor implements Visitor {
 
     }
 
+    @Override
+    public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
+        return null;
+    }
+
     //Gerald - comentado por Leonardo Farina
     public Object visitDoWhileCommand(DoWhileCommand ast, Object o) {  // gerald zamora
         if(ast.B == null) {
