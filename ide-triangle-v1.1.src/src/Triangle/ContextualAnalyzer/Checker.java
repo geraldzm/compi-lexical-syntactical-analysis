@@ -25,12 +25,13 @@ public final class Checker implements Visitor {
   // Leonardo variable para comprobar literales dentro de choose
     ArrayList<Object> myListLitCho = new ArrayList<Object>();    
     ArrayList<Object> myListLitChoChIn = new ArrayList<Object>();
-   
+    Integer checkChoose = 0;
+    
   // Leonardo variables para recursive
     boolean checkRecursive = true;
     boolean checkRecursive2 = true;    
-    boolean checkRecursive3 = true;
-    
+    boolean checkRecursive3 = true; 
+    boolean checkRecursive4 = false;
     
   // Commands
 
@@ -149,11 +150,9 @@ public final class Checker implements Visitor {
     @Override
     public Object visitDoWhileCommand(DoWhileCommand ast, Object o) { // Gerald
         ast.A.visit(this, null);
-
         TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
         if (! eType.equals(StdEnvironment.booleanType))
             reporter.reportError("Boolean expression expected here", "", ast.E.position);
-
         if(ast.B != null) ast.B.visit(this, null);
         return null;
     }
@@ -176,19 +175,19 @@ public final class Checker implements Visitor {
         TypeDenoter e1Type = (TypeDenoter) ast.E.visit(this, null);
         TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
         idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
-        TypeDenoter idType = (TypeDenoter) ast.I.visit(this, null);
-        Declaration id = new ForVarDeclaration(ast.I,idType,ast.E1,ast.I.position);
-
-
+               
+        Declaration id = new ForVarDeclaration(ast.I,e1Type,ast.E1,ast.I.position);
+        id.visit(this, o);
+        
+        
         if (! (e1Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E.position);
         else if (! (e2Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E1.position);
-        else if (! (idType.equals(StdEnvironment.integerType)))
-            reporter.reportError("Integer expected here", "", ast.I.position);
 
         idTable.enter(ast.I.spelling, id);
         ast.C.visit(this, null);
+        
         idTable.closeScope();
         return null;
     }
@@ -201,8 +200,9 @@ public final class Checker implements Visitor {
 
         idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
         TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
-        TypeDenoter idType = (TypeDenoter) ast.I.visit(this, null);
-        Declaration id = new ForVarDeclaration(ast.I,idType,ast.E1,ast.I.position);
+        
+        Declaration id = new ForVarDeclaration(ast.I,e1Type,ast.E1,ast.I.position);
+        id.visit(this, o);
 
 
         if (! (e1Type.equals(StdEnvironment.integerType)))
@@ -211,8 +211,6 @@ public final class Checker implements Visitor {
             reporter.reportError("Integer expression expected here", "", ast.E1.position);
         else if (! (e3Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E3.position);
-        else if (! (idType.equals(StdEnvironment.integerType)))
-            reporter.reportError("Integer expected here", "", ast.I.position);
 
         idTable.enter(ast.I.spelling, id);
         ast.C.visit(this, null);
@@ -229,8 +227,9 @@ public final class Checker implements Visitor {
 
         idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
         TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
-        TypeDenoter idType = (TypeDenoter) ast.I.visit(this, null);
-        Declaration id = new ForVarDeclaration(ast.I,idType,ast.E1,ast.I.position);
+        
+        Declaration id = new ForVarDeclaration(ast.I,e1Type,ast.E1,ast.I.position);
+        id.visit(this, o);
 
 
         if (! (e1Type.equals(StdEnvironment.integerType)))
@@ -239,8 +238,6 @@ public final class Checker implements Visitor {
             reporter.reportError("Integer expression expected here", "", ast.E1.position);
         else if (! (e3Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E3.position);
-        else if (! (idType.equals(StdEnvironment.integerType)))
-            reporter.reportError("Integer expected here", "", ast.I.position);
 
         idTable.enter(ast.I.spelling, id);
         ast.C.visit(this, null);
@@ -287,20 +284,40 @@ public final class Checker implements Visitor {
   
   //Leonardo 
   @Override
-  public Object visitChooseCommand(ChooseCommand ast, Object o) {      
-    myListLitCho.clear();
-    myListLitChoChIn.clear();    
+  public Object visitChooseCommand(ChooseCommand ast, Object o) {   
+    ArrayList<Object> myListLitChoT = null;    
+    ArrayList<Object> myListLitChoChInT = null;
+    if(checkChoose == 0){
+        myListLitCho.clear();
+        myListLitChoChIn.clear();  
+    }else{
+        myListLitChoT = (ArrayList<Object>) myListLitCho.clone();
+        myListLitChoChInT = (ArrayList<Object>) myListLitChoChIn.clone();
+        myListLitCho.clear();
+        myListLitChoChIn.clear();  
+    }
+    
+    checkChoose++;  
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (! (eType.equals(StdEnvironment.integerType ) ||  eType.equals(StdEnvironment.charType ))){
       reporter.reportError("Integer or Char expression expected here", "", ast.E.position);
     }    
     myListLitCho.add(ast.E);    
-    idTable.openScope();    
+    idTable.openScope();  
+
     ast.B.visit(this, null);    
+            
     compareLitChoose();    
     if(ast.C != null) 
         ast.C.visit(this, null); 
-    idTable.closeScope();        
+    idTable.closeScope();     
+       
+    checkChoose--;
+    
+    if(checkChoose != 0){
+        myListLitCho = myListLitChoT;
+        myListLitChoChIn = myListLitChoChInT;  
+    }
     return null;
   }
   // Leonardo  
@@ -528,7 +545,9 @@ public final class Checker implements Visitor {
                                         ast.I.spelling, ast.position);
         }  
     }else{
-        ast.FPS.visit(this, null);
+        idTable.openScope();
+        ast.FPS.visit(this, null);        
+        idTable.closeScope();
     }
     return null;
   }
@@ -541,11 +560,12 @@ public final class Checker implements Visitor {
                 if (ast.duplicated)
                   reporter.reportError ("identifier \"%\" already declared",
                                         ast.I.spelling, ast.position);
-            }
+            }            
             idTable.openScope();
-            ast.FPS.visit(this, null);
-            ast.C.visit(this, null);
+            ast.FPS.visit(this, null);  
+            ast.C.visit(this, null);                            
             idTable.closeScope();
+            
         }else{
             idTable.enter (ast.I.spelling, ast); // permits recursion
             if (ast.duplicated)
@@ -553,7 +573,9 @@ public final class Checker implements Visitor {
                                       ast.I.spelling, ast.position);
         }
     }else{
+        idTable.openScope();
         ast.FPS.visit(this, null);
+        idTable.closeScope();
     }
     return null;
   }
@@ -615,7 +637,10 @@ public final class Checker implements Visitor {
       ast.PF1.visit(this, null); // Recorremos sus parametros pero no los definimos en la tabla  
       checkRecursive3 = true;
       
+      checkRecursive4 = true;
       ast.PF1.visit(this, null); // Recorremos sus parametros y los definimos en la tabla  
+      checkRecursive4 = false;
+      
       checkRecursive2 = true;
       return(null);
     }  
@@ -749,7 +774,7 @@ public final class Checker implements Visitor {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     
     //Leonardo
-    if(checkRecursive2 ){
+    if(checkRecursive2 ||  checkRecursive4){
         if (! (fp instanceof ConstFormalParameter)){
           reporter.reportError ("const actual parameter not expected here", "",
                                 ast.position);
@@ -874,17 +899,25 @@ public final class Checker implements Visitor {
     return StdEnvironment.anyType;
   }
 
+  //Leonardo
   public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object o) {
     ast.T = (TypeDenoter) ast.T.visit(this, null);
-    //Leonardo
+    
+    Integer temp1 = (Integer.valueOf(ast.IL.spelling).intValue());    
+    if (temp1 == 0)
+      reporter.reportError ("arrays must not be empty", "", ast.IL.position);        
     if(ast.IL2 != null){
-        if ( Integer.valueOf(ast.IL2.spelling).intValue() == 0)
+        int temp2 = Integer.valueOf(ast.IL2.spelling).intValue();
+        if ( temp2 == 0){
           reporter.reportError ("arrays must not be empty", "", ast.IL2.position);
-    }
-    
-    if ((Integer.valueOf(ast.IL.spelling).intValue()) == 0)
-      reporter.reportError ("arrays must not be empty", "", ast.IL.position);
-    
+        }
+        else if( temp2 < temp1){
+          reporter.reportError ("second literal of array can�t be less than first literal", "", ast.IL2.position);
+        }
+        else if( temp2 == temp1){
+          reporter.reportError ("Literals \"%\" can not be equals", ast.IL.spelling+" and "+ast.IL2.spelling, ast.IL2.position);
+        }        
+    }    
     return ast;
   }
 
@@ -1025,7 +1058,10 @@ public final class Checker implements Visitor {
       } else if (binding instanceof VarInitialized) {
         Expression exType= ((VarInitialized) binding).T;
         ast.type = exType.type;
-        ast.variable = true;      
+        ast.variable = true;  
+      } else if (binding instanceof ForVarDeclaration) {
+        ast.type = ((ForVarDeclaration) binding).T;
+        ast.variable = false;        
       } else
         reporter.reportError ("\"%\" is not a const or var identifier",
                               ast.I.spelling, ast.I.position);

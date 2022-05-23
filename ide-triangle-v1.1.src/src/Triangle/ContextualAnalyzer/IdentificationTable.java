@@ -119,5 +119,6 @@ public final class IdentificationTable {
     }            
     entry = local;   
     entry.previous = firstEntry;
-  }
+  } 
+  
 }
