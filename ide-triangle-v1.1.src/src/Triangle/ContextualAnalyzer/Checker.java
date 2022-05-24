@@ -199,20 +199,24 @@ public final class Checker implements Visitor {
         TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
 
         idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
-        TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
         
         Declaration id = new ForVarDeclaration(ast.I,e1Type,ast.E1,ast.I.position);
         id.visit(this, o);
+        idTable.enter(ast.I.spelling, id);
+        
+        TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
+        
+
 
 
         if (! (e1Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E.position);
         else if (! (e2Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E1.position);
-        else if (! (e3Type.equals(StdEnvironment.integerType)))
-            reporter.reportError("Integer expression expected here", "", ast.E3.position);
+        else if (! (e3Type.equals(StdEnvironment.booleanType)))
+            reporter.reportError("Boolean expression expected here", "", ast.E3.position);
 
-        idTable.enter(ast.I.spelling, id);
+        
         ast.C.visit(this, null);
         if(ast.leaveE != null) ast.leaveE.visit(this, null);
         idTable.closeScope();
@@ -226,20 +230,20 @@ public final class Checker implements Visitor {
         TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
 
         idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
+         Declaration id = new ForVarDeclaration(ast.I,e1Type,ast.E1,ast.I.position);
+        id.visit(this, o);
+        idTable.enter(ast.I.spelling, id);
+        
         TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
         
-        Declaration id = new ForVarDeclaration(ast.I,e1Type,ast.E1,ast.I.position);
-        id.visit(this, o);
-
 
         if (! (e1Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E.position);
         else if (! (e2Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E1.position);
-        else if (! (e3Type.equals(StdEnvironment.integerType)))
-            reporter.reportError("Integer expression expected here", "", ast.E3.position);
+        else if (! (e3Type.equals(StdEnvironment.booleanType)))
+            reporter.reportError("Boolean expression expected here", "", ast.E3.position);
 
-        idTable.enter(ast.I.spelling, id);
         ast.C.visit(this, null);
         if(ast.leaveE != null) ast.leaveE.visit(this, null);
         idTable.closeScope();
