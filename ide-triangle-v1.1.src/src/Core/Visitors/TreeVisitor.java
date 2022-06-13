@@ -4,6 +4,7 @@
  */
 
 package Core.Visitors;
+import Triangle.TreeDrawer.*;
 import Triangle.AbstractSyntaxTrees.*;
 import Triangle.GenerateHTML;
 import Triangle.Writer;
@@ -392,6 +393,10 @@ public class TreeVisitor implements Visitor {
         // Leonardo
         Writer xml = new Writer(GenerateHTML.nameFile+".xml");
         xml.write(ast);
+        Drawer dibujar = new Drawer();
+        //Draw ast
+        dibujar.draw(ast);
+        
         return(createUnary("Program", ast.C));
     }
     
