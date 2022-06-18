@@ -107,7 +107,6 @@ public final class Encoder implements Visitor {
     emit(Machine.JUMPop, 0, Machine.CBr, 0);
     loopAddr = nextInstrAddr;
     ast.C.visit(this, frame);
-    System.out.println("jumpAddr: " + jumpAddr + ", nextInstrAddr: " + nextInstrAddr);
     patch(jumpAddr, nextInstrAddr);
     ast.E.visit(this, frame);
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
