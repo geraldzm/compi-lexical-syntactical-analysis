@@ -99,7 +99,26 @@ public final class Encoder implements Visitor {
     return null;
   }
   
-  public Object visitWhileCommand(WhileCommand ast, Object o) {
+    public Object visitWhileCommand(WhileCommand ast, Object o) { //Stephanie
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    System.out.println("jumpAddr: " + jumpAddr + ", nextInstrAddr: " + nextInstrAddr);
+    patch(jumpAddr, nextInstrAddr);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    if(ast.B != null)
+        ast.B.visit(this,frame);
+    return null;
+  }
+
+  //Gerald
+  @Override
+  public Object visitUntilCommand(UntilCommand ast, Object o) { //Stephanie
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
 
@@ -109,13 +128,9 @@ public final class Encoder implements Visitor {
     ast.C.visit(this, frame);
     patch(jumpAddr, nextInstrAddr);
     ast.E.visit(this, frame);
-    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
-    return null;
-  }
-
-  //Gerald
-  @Override
-  public Object visitUntilCommand(UntilCommand ast, Object o) {
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
+    if(ast.B != null)
+        ast.B.visit(this,frame);
     return null;
   }
 
@@ -124,13 +139,31 @@ public final class Encoder implements Visitor {
     return null;
   }
 
-  @Override
-  public Object visitDoWhileCommand(DoWhileCommand ast, Object o) {
+    @Override
+  public Object visitDoWhileCommand(DoWhileCommand ast, Object o) { //Stephanie
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    loopAddr = nextInstrAddr;
+    ast.A.visit(this, frame);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    if(ast.B != null)
+        ast.B.visit(this,frame);
     return null;
   }
 
   @Override
-  public Object visitDoUntilCommand(DoUntilCommand ast, Object o) {
+  public Object visitDoUntilCommand(DoUntilCommand ast, Object o) { //Stephanie
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    loopAddr = nextInstrAddr;
+    ast.A.visit(this, frame);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
+    if(ast.B != null)
+        ast.B.visit(this,frame);
     return null;
   }
   
@@ -363,9 +396,28 @@ public final class Encoder implements Visitor {
     return new Integer(extraSize);
   }
   
-  //Leonardo
-  public Object visitVarInitialized(VarInitialized ast, Object o) {      
-    return null;
+//Leonardo
+  public Object visitVarInitialized(VarInitialized ast, Object o) {  //Stephanie    
+    Frame frame = (Frame) o;
+    int extraSize = 0;
+    extraSize = ((Integer) ast.T.visit(this, null)).intValue();
+    emit(Machine.PUSHop, 0, 0, extraSize);
+
+    if (ast.T instanceof CharacterExpression) {
+        CharacterLiteral CL = ((CharacterExpression) ast.T).CL;
+        ast.entity = new KnownValue(Machine.characterSize,
+                                 characterValuation(CL.spelling));
+    } else if (ast.T instanceof IntegerExpression) {
+        IntegerLiteral IL = ((IntegerExpression) ast.T).IL;
+        ast.entity = new KnownValue(Machine.integerSize,
+				 Integer.parseInt(IL.spelling));
+    } else {
+      int valSize = ((Integer) ast.T.visit(this, frame)).intValue();
+      ast.entity = new UnknownValue(valSize, frame.level, frame.size);
+      extraSize = valSize;
+    }
+    writeTableDetails(ast);
+    return new Integer(extraSize);
   }
   
   // Array Aggregates
