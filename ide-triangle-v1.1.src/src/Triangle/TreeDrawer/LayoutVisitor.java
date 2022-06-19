@@ -10,6 +10,10 @@
  * This software is provided free for educational use only. It may
  * not be used for commercial purposes without the prior written permission
  * of the authors.
+ *------------------------------------------------------------------------------
+ *
+ *   Cambios realizados por Leonardo Farinna Ozamis
+ *
  */
 
 package Triangle.TreeDrawer;
@@ -17,6 +21,7 @@ package Triangle.TreeDrawer;
 import java.awt.FontMetrics;
 
 import Triangle.AbstractSyntaxTrees.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class LayoutVisitor implements Visitor {
 
@@ -29,7 +34,7 @@ public class LayoutVisitor implements Visitor {
     this.fontMetrics = fontMetrics;
   }
 
-  // Commands
+ // Commands
   public Object visitAssignCommand(AssignCommand ast, Object obj) {
     return layoutBinary("AssignCom.", ast.V, ast.E);
   }
@@ -53,19 +58,22 @@ public class LayoutVisitor implements Visitor {
 
   @Override
   public Object visitElIfCommand(ElIfCommand ast, Object o) {
-    return layoutBinary("ElifCom.", ast.E, ast.C1);
+    return layoutBinary("ElsifCom.", ast.E, ast.C1);
   }
 
   @Override
   public Object visitDoWhileCommand(DoWhileCommand ast, Object o) {
     if(ast.B == null)
       return layoutBinary("WhileCom.", ast.E, ast.A);
-    return layoutTernary("WhileCom.", ast.E, ast.A, ast.B);
+    return layoutTernary("WhileComLeA.", ast.E, ast.A, ast.B);
   }
 
   @Override
   public Object visitDoUntilCommand(DoUntilCommand ast, Object o) {
-    return null;
+    if(ast.B == null) {
+            return(layoutBinary("DoUntilCom.", ast.E, ast.A));
+        }
+    return(layoutTernary("DoUntilComLea.", ast.E, ast.A, ast.B));    
   }
 
   public Object visitLetCommand(LetCommand ast, Object obj) {
@@ -86,14 +94,17 @@ public class LayoutVisitor implements Visitor {
     return layoutBinary("WhileCom.", ast.E, ast.C);
   }
 
-  @Override
+  @Override //Leonardo
   public Object visitUntilCommand(UntilCommand ast, Object o) {
-    return null;
+    if(ast.B == null) {
+        return(layoutBinary("UntilComm.", ast.E, ast.C));
+    }
+    return(layoutTernary("UCLeaveComm.", ast.E, ast.C, ast.B));
   }
 
-  @Override
-  public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
-    return null;
+  @Override//Leonardo
+  public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {      
+    return(layoutTernary("ForVarDec.", ast.I, ast.T,ast.e1));
   }
 
   //Leonardo
@@ -301,9 +312,12 @@ public class LayoutVisitor implements Visitor {
   public Object visitAnyTypeDenoter(AnyTypeDenoter ast, Object obj) {
     return layoutNullary("any");
   }
-
+  //Leonardo 
   public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object obj) {
+   if(ast.IL2 == null){
     return layoutBinary("ArrayTypeD.", ast.IL, ast.T);
+   }
+   return layoutTernary("ArrayL2TypeD.", ast.IL,ast.IL2, ast.T);
   }
 
   public Object visitBoolTypeDenoter(BoolTypeDenoter ast, Object obj) {
@@ -345,7 +359,8 @@ public class LayoutVisitor implements Visitor {
     return layoutNullary(ast.spelling);
   }
 
-    public Object visitCaseLiteral(CaseLiteral ast, Object obj) {
+  //Leonardo
+  public Object visitCaseLiteral(CaseLiteral ast, Object obj) {
     return layoutNullary(ast.spelling);
   }
     
@@ -381,20 +396,29 @@ public class LayoutVisitor implements Visitor {
   public Object visitProgram(Program ast, Object obj) {
     return layoutUnary("Program", ast.C);
   }
-
+  //Leonardo
   @Override
   public Object visitForDoCommand(ForDoCommand ast, Object o) {
-    return null;
+        if(ast.leaveC == null) {
+            return(layoutQuaternary("FFWDoCom.", ast.I, ast.E, ast.E1, ast.C));
+        }
+        return(layoutQuinary("FFWDLeaveCom.", ast.I, ast.E, ast.E1, ast.C, ast.leaveC));
   }
-
+  //Leonardo
   @Override
   public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
-    return null;
+    if(ast.leaveE == null) {
+        return(layoutQuinary("FFWDoCom.", ast.I, ast.E, ast.E1, ast.E3, ast.C));
+    }
+    return(layoutSenary("FFWDLeaveCom.", ast.I, ast.E, ast.E1, ast.E3, ast.C, ast.leaveE));    
   }
-
+  //Leonardo
   @Override
   public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
-    return null;
+    if(ast.leaveE == null) {
+        return(layoutQuinary("FFUDoCom.", ast.I, ast.E, ast.E1, ast.E3, ast.C));
+    }
+    return(layoutSenary("FFUDLeaveCom.", ast.I, ast.E, ast.E1, ast.E3, ast.C, ast.leaveE));
   }
 
   private DrawingTree layoutCaption (String name) {
@@ -575,4 +599,34 @@ public class LayoutVisitor implements Visitor {
     return r;
   }
 
+  //Leonardo Farina
+  private DrawingTree layoutQuinary (String name, AST child1, AST child2,
+                                        AST child3, AST child4,AST child5) {
+    DrawingTree dt = layoutCaption(name);
+    DrawingTree d1 = (DrawingTree) child1.visit(this, null);
+    DrawingTree d2 = (DrawingTree) child2.visit(this, null);
+    DrawingTree d3 = (DrawingTree) child3.visit(this, null);
+    DrawingTree d4 = (DrawingTree) child4.visit(this, null);
+    DrawingTree d5 = (DrawingTree) child5.visit(this, null);
+    dt.setChildren(new DrawingTree[] {d1, d2, d3, d4, d5});
+    attachParent(dt, join(dt));
+    return dt;
+  }
+  
+  //Leonardo Farina
+  private DrawingTree layoutSenary (String name, AST child1, AST child2,
+                                        AST child3, AST child4,AST child5,AST child6) {
+    DrawingTree dt = layoutCaption(name);
+    DrawingTree d1 = (DrawingTree) child1.visit(this, null);
+    DrawingTree d2 = (DrawingTree) child2.visit(this, null);
+    DrawingTree d3 = (DrawingTree) child3.visit(this, null);
+    DrawingTree d4 = (DrawingTree) child4.visit(this, null);
+    DrawingTree d5 = (DrawingTree) child5.visit(this, null);
+    DrawingTree d6 = (DrawingTree) child5.visit(this, null);
+    dt.setChildren(new DrawingTree[] {d1, d2, d3, d4, d5,d6});
+    attachParent(dt, join(dt));
+    return dt;
+  }
+  
+  
 }

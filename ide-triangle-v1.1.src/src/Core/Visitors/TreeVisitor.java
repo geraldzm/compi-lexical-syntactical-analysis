@@ -85,9 +85,9 @@ public class TreeVisitor implements Visitor {
 
     }
 
-    @Override
-    public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
-        return null;
+    @Override // Leonardo
+    public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {           
+        return(createTernary("For Var Declaration", ast.I, ast.T,ast.e1));
     }
 
     //Gerald - comentado por Leonardo Farina

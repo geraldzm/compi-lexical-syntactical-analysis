@@ -138,6 +138,11 @@ public class WriterVisitor implements Visitor {
 
     @Override
     public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
+        writeLineHTML("<ForVarDeclaration>");
+        ast.I.visit(this, null);
+        ast.T.visit(this, null);
+        ast.e1.visit(this, null);
+        writeLineHTML("</ForVarDeclaration>");
         return null;
     }
 

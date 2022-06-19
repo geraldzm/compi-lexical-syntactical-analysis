@@ -34,15 +34,13 @@ public class TableVisitor implements Visitor {
   // Commands
   public Object visitAssignCommand(AssignCommand ast, Object o) { 
       ast.V.visit(this, null);
-      ast.E.visit(this, null);
-      
+      ast.E.visit(this, null);      
       return(null);
   }
   
   public Object visitCallCommand(CallCommand ast, Object o) { 
       ast.I.visit(this, null);
-      ast.APS.visit(this, null);
-      
+      ast.APS.visit(this, null);      
       return(null);
   }
   
@@ -53,8 +51,7 @@ public class TableVisitor implements Visitor {
   public Object visitIfCommand(IfCommand ast, Object o) { 
       ast.E.visit(this, null);
       ast.C1.visit(this, null);
-      ast.C2.visit(this, null);
-      
+      ast.C2.visit(this, null);      
       return(null);
   }
 
@@ -65,14 +62,24 @@ public class TableVisitor implements Visitor {
         ast.C1.visit(this, null);
         return null;
     }
-
+    // Leonardo
     @Override
     public Object visitDoWhileCommand(DoWhileCommand ast, Object o) {
+        ast.E.visit(this, null);
+        ast.A.visit(this, null);   
+        if(ast.B != null) {            
+            ast.B.visit(this, null);
+        }
         return null;
     }
-
+    // Leonardo
     @Override
     public Object visitDoUntilCommand(DoUntilCommand ast, Object o) {
+        ast.E.visit(this, null);
+        ast.A.visit(this, null);        
+        if(ast.B != null) {            
+            ast.B.visit(this, null);
+        }
         return null;
     }
 
@@ -81,6 +88,7 @@ public class TableVisitor implements Visitor {
     public Object visitNothingCommand(NothingCommand ast, Object o) {
         return null;
     }
+    // Leonardo
     @Override
     public Object visitCase(Case ast, Object o) {        
         ast.A.visit(this, null);
@@ -123,18 +131,25 @@ public class TableVisitor implements Visitor {
   
   public Object visitWhileCommand(WhileCommand ast, Object o) { 
       ast.E.visit(this, null);
-      ast.C.visit(this, null);
-      
+      ast.C.visit(this, null);      
       return(null);
   }
 
     @Override
     public Object visitUntilCommand(UntilCommand ast, Object o) {
+        ast.E.visit(this, null);
+        ast.C.visit(this, null);        
+        if(ast.B != null) {            
+            ast.B.visit(this, null);
+        }
         return null;
     }
-
+    // Leonardo
     @Override
     public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
+        ast.I.visit(this, null);
+        ast.T.visit(this, null);
+        ast.e1.visit(this, null);
         return null;
     }
     // </editor-fold>
@@ -181,6 +196,8 @@ public class TableVisitor implements Visitor {
   }
   
   public Object visitIntegerExpression(IntegerExpression ast, Object o) { 
+      ast.IL.visit(this, null);
+      
       return(null);
   }
   
@@ -496,10 +513,12 @@ public class TableVisitor implements Visitor {
   public Object visitAnyTypeDenoter(AnyTypeDenoter ast, Object o) {      
       return(null);
   }
-  
+  //Leonardo
   public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object o) { 
-      ast.IL.visit(this, null);
-      ast.T.visit(this, null);
+        ast.IL.visit(this, null);
+        if(ast.IL2 != null)
+            ast.IL2.visit(this, null);
+        ast.T.visit(this, null);
       
       return(null);
   }
@@ -613,23 +632,45 @@ public class TableVisitor implements Visitor {
   // <editor-fold defaultstate="collapsed" desc=" Table Creation Methods ">
   // Programs
   public Object visitProgram(Program ast, Object o) { 
-      ast.C.visit(this, null);
-      
+      ast.C.visit(this, null);      
       return(null);
   }
-
+    //Leonardo
     @Override
     public Object visitForDoCommand(ForDoCommand ast, Object o) {
+        ast.I.visit(this, null);
+        ast.E.visit(this, null);
+        ast.E1.visit(this, null);        
+        ast.C.visit(this, null);              
+        if(ast.leaveC != null) {            
+            ast.leaveC.visit(this, null);
+        }
         return null;
     }
-
+    //Leonardo
     @Override
     public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
+        ast.I.visit(this, null);
+        ast.E.visit(this, null);
+        ast.E1.visit(this, null);          
+        ast.E3.visit(this, null);
+        ast.C.visit(this, null);
+        if(ast.leaveE != null) {            
+            ast.leaveE.visit(this, null);
+        }  
         return null;
     }
-
+    //Leonardo
     @Override
     public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
+        ast.I.visit(this, null);
+        ast.E.visit(this, null);
+        ast.E1.visit(this, null);          
+        ast.E3.visit(this, null);
+        ast.C.visit(this, null);
+        if(ast.leaveE != null) {            
+            ast.leaveE.visit(this, null);
+        }   
         return null;
     }
 

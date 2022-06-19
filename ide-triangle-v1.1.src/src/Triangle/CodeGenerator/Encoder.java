@@ -25,6 +25,8 @@ import Triangle.AbstractSyntaxTrees.*;
 import Triangle.ErrorReporter;
 import Triangle.StdEnvironment;
 
+import java.util.ArrayList;
+
 public final class Encoder implements Visitor {
 
 
@@ -48,32 +50,65 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+  public Integer contador = -1;
+  int jumpelseif = -1; 
+  ArrayList<Integer> elsif = new ArrayList<Integer>();
+  ArrayList<Integer> elsif2 = new ArrayList<Integer>();
   public Object visitIfCommand(IfCommand ast, Object o) {
-    Frame frame = (Frame) o;
-    int jumpifAddr, jumpAddr;
-
+    elsif.clear();
+    contador = -1;
+       
+    Frame frame = (Frame) o;    
+    int jumpifAddr, jumpAddr, jumpElsif, exit;    
+    
     Integer valSize = (Integer) ast.E.visit(this, frame);
     jumpifAddr = nextInstrAddr;
     emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
     ast.C1.visit(this, frame);
     jumpAddr = nextInstrAddr;
     emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    patch(jumpifAddr, nextInstrAddr);
-    ast.C2.visit(this, frame);
-    patch(jumpAddr, nextInstrAddr);
+    
+    if(contador == -1){
+        patch(jumpifAddr, nextInstrAddr);
+        ast.C2.visit(this, frame);
+        patch(jumpAddr, nextInstrAddr);
+    }else{
+        emit(Machine.JUMPop, 0, Machine.CBr, 0);
+        patch(jumpifAddr, elsif.get(0));
+        
+        ast.C2.visit(this, frame);
+        
+        for (int i=1;i<elsif.size();i++) {            
+            patch(elsif.get(i), nextInstrAddr);
+        }
+        
+        patch(jumpAddr, nextInstrAddr);    
+        
+        reporter.reportRestriction("ssssss");
+        reporter.reportRestriction(Machine.code.toString());
+    }
     return null;
   }
 
   @Override
-  public Object visitElIfCommand(ElIfCommand ast, Object o) {
+  public Object visitElIfCommand(ElIfCommand ast, Object o) {  
+    if(elsif.size() == 0)
+        elsif.add(nextInstrAddr);
     Frame frame = (Frame) o;
-    int jumpifAddr;
-
+    int jumpifAddr, jumpAddr;
+        
     Integer valSize = (Integer) ast.E.visit(this, frame);
     jumpifAddr = nextInstrAddr;
     emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
     ast.C1.visit(this, frame);
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    
     patch(jumpifAddr, nextInstrAddr);
+    
+    elsif.add(jumpAddr);
+    
+    contador = 0;
     return null;
   }
 
@@ -134,21 +169,42 @@ public final class Encoder implements Visitor {
     return null;
   }
   
-  //Leonardo
+  //Leonardo--------------------------------------------------------------------------------------------------
   @Override
-  public Object visitCaseLiteral(CaseLiteral ast, Object o) {
+  public Object visitCaseLiteral(CaseLiteral ast, Object o) { 
     return null;
   }
   @Override
   public Object visitCase(Case ast, Object o) {
+      
+      
+      
     return null;
   }
   @Override
   public Object visitChooseCommand(ChooseCommand ast, Object o) {
+    Frame frame = (Frame) o;  
+    
+    int jumpifAddr, jumpAddr;    
+    
+    Integer valSize = (Integer) ast.E.visit(this, frame);
+    jumpifAddr = nextInstrAddr;
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
+    
+    
+    ast.B.visit(this, frame);
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    patch(jumpifAddr, nextInstrAddr);
+    
+    if(ast.C != null){ 
+            ast.C.visit(this, frame);
+            patch(jumpAddr, nextInstrAddr);            
+    }    
     return null;
   }
 
-    //Leonardo
+    //Leonardo---------------------------------------------------------------------------------------------------
     @Override
     public Object visitProcFuncs(ProcFuncs ast, Object obj) {        
       return(null);
@@ -162,8 +218,15 @@ public final class Encoder implements Visitor {
     
     //Leonardo
     @Override
-    public Object visitPrivate(Private ast, Object obj) {
-      return(null);
+    public Object visitPrivate(Private ast, Object o) {   
+    Frame frame = (Frame) o;
+    int extraSize1, extraSize2;
+
+    extraSize1 = ((Integer) ast.D1.visit(this, frame)).intValue();
+    Frame frame1 = new Frame (frame, extraSize1);
+    extraSize2 = ((Integer) ast.D2.visit(this, frame1)).intValue();
+    
+    return new Integer(extraSize1 + extraSize2);
     }  
           
     
