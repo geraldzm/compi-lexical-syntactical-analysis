@@ -882,11 +882,11 @@ public final class Encoder implements Visitor {
     //    2.b jump back if var > max
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, firstJump+1);
 
-    // pop i
-    emit(Machine.POPop, 0, 0, 1); // clean for var
-
     if(ast.leaveC != null)
       ast.leaveC.visit(this, o);
+
+    // pop i
+    emit(Machine.POPop, 0, 0, 1); // clean for var
 
     return null;
   }
@@ -934,11 +934,11 @@ public final class Encoder implements Visitor {
 
     patch(froJump, nextInstrAddr);
 
-    // pop i
-    emit(Machine.POPop, 0, 0, 1); // clean for var
-
     if(ast.leaveE != null)
       ast.leaveE.visit(this, o);
+
+    // pop i
+    emit(Machine.POPop, 0, 0, 1); // clean for var
 
     return null;
   }
@@ -986,11 +986,12 @@ public final class Encoder implements Visitor {
 
     patch(froJump, nextInstrAddr);
 
-    // pop i
-    emit(Machine.POPop, 0, 0, 1); // clean for var
 
     if(ast.leaveE != null)
       ast.leaveE.visit(this, o);
+
+    // pop i
+    emit(Machine.POPop, 0, 0, 1); // clean for var
 
     return null;
   }
