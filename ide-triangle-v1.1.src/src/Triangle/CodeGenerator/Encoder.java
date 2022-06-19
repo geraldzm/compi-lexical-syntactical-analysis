@@ -471,12 +471,10 @@ public final class Encoder implements Visitor {
 
     if (ast.T instanceof CharacterExpression) {
       CharacterLiteral CL = ((CharacterExpression) ast.T).CL;
-      ast.entity = new KnownValue(Machine.characterSize,
-              characterValuation(CL.spelling));
+      ast.entity = new UnknownValue(Machine.characterSize, frame.level, frame.size);
     } else if (ast.T instanceof IntegerExpression) {
       IntegerLiteral IL = ((IntegerExpression) ast.T).IL;
-      ast.entity = new KnownValue(Machine.integerSize,
-              Integer.parseInt(IL.spelling));
+      ast.entity = new UnknownValue(Machine.integerSize,  frame.level, frame.size);
     } else {
       int valSize = ((Integer) ast.T.visit(this, frame)).intValue();
       ast.entity = new UnknownValue(valSize, frame.level, frame.size);
@@ -884,6 +882,9 @@ public final class Encoder implements Visitor {
     //    2.b jump back if var > max
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, firstJump+1);
 
+    // pop i
+    emit(Machine.POPop, 0, 0, 1); // clean for var
+
     if(ast.leaveC != null)
       ast.leaveC.visit(this, o);
 
@@ -933,6 +934,9 @@ public final class Encoder implements Visitor {
 
     patch(froJump, nextInstrAddr);
 
+    // pop i
+    emit(Machine.POPop, 0, 0, 1); // clean for var
+
     if(ast.leaveE != null)
       ast.leaveE.visit(this, o);
 
@@ -981,6 +985,9 @@ public final class Encoder implements Visitor {
     emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, firstJump+1);
 
     patch(froJump, nextInstrAddr);
+
+    // pop i
+    emit(Machine.POPop, 0, 0, 1); // clean for var
 
     if(ast.leaveE != null)
       ast.leaveE.visit(this, o);
