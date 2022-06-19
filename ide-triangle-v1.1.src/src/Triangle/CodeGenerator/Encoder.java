@@ -134,7 +134,7 @@ public final class Encoder implements Visitor {
     return null;
   }
   
-  public Object visitWhileCommand(WhileCommand ast, Object o) {
+  public Object visitWhileCommand(WhileCommand ast, Object o) {//Stephanie
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
 
@@ -145,27 +145,64 @@ public final class Encoder implements Visitor {
     patch(jumpAddr, nextInstrAddr);
     ast.E.visit(this, frame);
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    if(ast.B != null)
+      ast.B.visit(this,frame);
     return null;
   }
 
   //Gerald
   @Override
-  public Object visitUntilCommand(UntilCommand ast, Object o) {
+  public Object visitUntilCommand(UntilCommand ast, Object o) { //Stephanie
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
+    if(ast.B != null)
+      ast.B.visit(this,frame);
     return null;
   }
 
   @Override
   public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
-    return null;
+    Frame frame = (Frame) o;
+
+    int valSize = ((Integer) ast.e1.visit(this, frame)).intValue();
+    ast.entity = new UnknownValue(valSize, frame.level, frame.size);
+
+    return new Integer(valSize);
   }
 
   @Override
   public Object visitDoWhileCommand(DoWhileCommand ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    loopAddr = nextInstrAddr;
+    ast.A.visit(this, frame);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+    if(ast.B != null)
+      ast.B.visit(this,frame);
     return null;
   }
 
   @Override
   public Object visitDoUntilCommand(DoUntilCommand ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    loopAddr = nextInstrAddr;
+    ast.A.visit(this, frame);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
+    if(ast.B != null)
+      ast.B.visit(this,frame);
     return null;
   }
   
@@ -427,10 +464,28 @@ public final class Encoder implements Visitor {
   }
   
   //Leonardo
-  public Object visitVarInitialized(VarInitialized ast, Object o) {      
-    return null;
+  public Object visitVarInitialized(VarInitialized ast, Object o) {//Stephanie
+    Frame frame = (Frame) o;
+    int extraSize = 0;
+    extraSize = ((Integer) ast.T.visit(this, null)).intValue();
+
+    if (ast.T instanceof CharacterExpression) {
+      CharacterLiteral CL = ((CharacterExpression) ast.T).CL;
+      ast.entity = new KnownValue(Machine.characterSize,
+              characterValuation(CL.spelling));
+    } else if (ast.T instanceof IntegerExpression) {
+      IntegerLiteral IL = ((IntegerExpression) ast.T).IL;
+      ast.entity = new KnownValue(Machine.integerSize,
+              Integer.parseInt(IL.spelling));
+    } else {
+      int valSize = ((Integer) ast.T.visit(this, frame)).intValue();
+      ast.entity = new UnknownValue(valSize, frame.level, frame.size);
+      extraSize = valSize;
+    }
+    writeTableDetails(ast);
+    return new Integer(extraSize);
   }
-  
+
   // Array Aggregates
   public Object visitMultipleArrayAggregate(MultipleArrayAggregate ast,
 					    Object o) {
@@ -492,8 +547,7 @@ public final class Encoder implements Visitor {
   public Object visitVarFormalParameter(VarFormalParameter ast, Object o) {
     Frame frame = (Frame) o;
     ast.T.visit(this, null);
-    ast.entity = new UnknownAddress (Machine.addressSize, frame.level,
-				  -frame.size - Machine.addressSize);
+    ast.entity = new UnknownAddress (Machine.addressSize, frame.level,-frame.size - Machine.addressSize);
     writeTableDetails(ast);
     return new Integer(Machine.addressSize);
   }
@@ -795,17 +849,142 @@ public final class Encoder implements Visitor {
 
   //Gerald
   @Override
-  public Object visitForDoCommand(ForDoCommand ast, Object o) {
+  public Object visitForDoCommand(ForDoCommand ast, Object o) { // Gerald
+
+    Frame frame = (Frame) o;
+    int firstJump;
+
+    ast.var.visit(this, frame);
+    // for n...m do ! insert n value to the var
+    ObjectAddress varAddress = ((UnknownValue) ast.var.entity).address;
+
+    // jump to eval
+    firstJump = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);// jump to eval
+
+    // visit content
+    ast.C.visit(this, frame);
+
+    // eval
+    // 1. increase var
+    //    1.a insert var into the stack
+    emit(Machine.LOADop, 1, Machine.SBr, varAddress.displacement);
+    //    1.b call succ to increase what is on the top of the stack
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
+    //    1.c insert the new value into the variable
+    emit(Machine.STOREop, 1, Machine.SBr, varAddress.displacement);
+
+    // 2. compare var with sup (i < max)
+    patch(firstJump, nextInstrAddr);
+    //    2.a load var ( the max is already on the top to this point )
+    ast.E1.visit(this, frame);
+    emit(Machine.LOADop, 1, Machine.SBr, varAddress.displacement);
+
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.geDisplacement); // gtDisplacement
+    //    2.b jump back if var > max
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, firstJump+1);
+
+    if(ast.leaveC != null)
+      ast.leaveC.visit(this, o);
+
     return null;
   }
   
   @Override
-  public Object visitForWhileCommand(ForWhileCommand ast, Object o) {
+  public Object visitForWhileCommand(ForWhileCommand ast, Object o) { // gerald
+
+    Frame frame = (Frame) o;
+    int froJump, firstJump;
+
+    ast.var.visit(this, frame);
+    // for n...m do ! insert n value to the var
+    ObjectAddress varAddress = ((UnknownValue) ast.var.entity).address;
+
+    // jump to eval
+    firstJump = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);// jump to eval
+
+    // visit content
+    ast.C.visit(this, frame);
+
+    // eval
+    // 1. increase var
+    //    1.a insert var into the stack
+    emit(Machine.LOADop, 1, Machine.SBr, varAddress.displacement);
+    //    1.b call succ to increase what is on the top of the stack
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
+    //    1.c insert the new value into the variable
+    emit(Machine.STOREop, 1, Machine.SBr, varAddress.displacement);
+
+    // 2. compare var with sup (i < max)
+    patch(firstJump, nextInstrAddr);
+    //    2.a load var ( the max is already on the top to this point )
+    ast.E1.visit(this, frame);
+    emit(Machine.LOADop, 1, Machine.SBr, varAddress.displacement);
+
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.geDisplacement); // gtDisplacement
+    //    2.b jump back if var > max
+    froJump = nextInstrAddr;
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // firstJump+1
+
+    // eval until
+    ast.E3.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, firstJump+1);
+
+    patch(froJump, nextInstrAddr);
+
+    if(ast.leaveE != null)
+      ast.leaveE.visit(this, o);
+
     return null;
   }
 
   @Override
   public Object visitForUntilCommand(ForUntilCommand ast, Object o) {
+
+    Frame frame = (Frame) o;
+    int froJump, firstJump;
+
+    ast.var.visit(this, frame);
+    // for n...m do ! insert n value to the var
+    ObjectAddress varAddress = ((UnknownValue) ast.var.entity).address;
+
+    // jump to eval
+    firstJump = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);// jump to eval
+
+    // visit content
+    ast.C.visit(this, frame);
+
+    // eval
+    // 1. increase var
+    //    1.a insert var into the stack
+    emit(Machine.LOADop, 1, Machine.SBr, varAddress.displacement);
+    //    1.b call succ to increase what is on the top of the stack
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
+    //    1.c insert the new value into the variable
+    emit(Machine.STOREop, 1, Machine.SBr, varAddress.displacement);
+
+    // 2. compare var with sup (i < max)
+    patch(firstJump, nextInstrAddr);
+    //    2.a load var ( the max is already on the top to this point )
+    ast.E1.visit(this, frame);
+    emit(Machine.LOADop, 1, Machine.SBr, varAddress.displacement);
+
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.geDisplacement); // gtDisplacement
+    //    2.b jump back if var > max
+    froJump = nextInstrAddr;
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0); // firstJump+1
+
+    // eval until
+    ast.E3.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, firstJump+1);
+
+    patch(froJump, nextInstrAddr);
+
+    if(ast.leaveE != null)
+      ast.leaveE.visit(this, o);
+
     return null;
   }
   

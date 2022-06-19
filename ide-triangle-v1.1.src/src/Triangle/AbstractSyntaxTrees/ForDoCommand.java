@@ -34,4 +34,5 @@ public class ForDoCommand extends Command { // gerald zamora
   public Identifier I;
   public Expression E, E1;
   public Command C, leaveC;
+  public ForVarDeclaration var;
 }

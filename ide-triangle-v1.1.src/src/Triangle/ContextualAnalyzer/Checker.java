@@ -175,19 +175,21 @@ public final class Checker implements Visitor {
         TypeDenoter e1Type = (TypeDenoter) ast.E.visit(this, null);
         TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
         idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
-               
-        Declaration id = new ForVarDeclaration(ast.I,e1Type,ast.E1,ast.I.position);
+
+        ForVarDeclaration id = new ForVarDeclaration(ast.I,e1Type,ast.E,ast.I.position); // gerald
         id.visit(this, o);
-        
-        
+
         if (! (e1Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E.position);
         else if (! (e2Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E1.position);
 
         idTable.enter(ast.I.spelling, id);
+        ast.var = id;
         ast.C.visit(this, null);
-        
+
+        if(ast.leaveC != null) ast.leaveC.visit(this, null);
+
         idTable.closeScope();
         return null;
     }
@@ -199,15 +201,13 @@ public final class Checker implements Visitor {
         TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
 
         idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
-        
-        Declaration id = new ForVarDeclaration(ast.I,e1Type,ast.E1,ast.I.position);
+
+        ForVarDeclaration id = new ForVarDeclaration(ast.I, e1Type, ast.E, ast.I.position);// gerald
         id.visit(this, o);
         idTable.enter(ast.I.spelling, id);
-        
+        ast.var = id;
+
         TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
-        
-
-
 
         if (! (e1Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E.position);
@@ -230,12 +230,12 @@ public final class Checker implements Visitor {
         TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
 
         idTable.openScope(); // Abro scope acá para que E y E1 no conozcan a I
-         Declaration id = new ForVarDeclaration(ast.I,e1Type,ast.E1,ast.I.position);
+        ForVarDeclaration id = new ForVarDeclaration(ast.I,e1Type,ast.E,ast.I.position); // gerald
         id.visit(this, o);
         idTable.enter(ast.I.spelling, id);
-        
+        ast.var = id;
+
         TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
-        
 
         if (! (e1Type.equals(StdEnvironment.integerType)))
             reporter.reportError("Integer expression expected here", "", ast.E.position);
@@ -916,7 +916,7 @@ public final class Checker implements Visitor {
           reporter.reportError ("arrays must not be empty", "", ast.IL2.position);
         }
         else if( temp2 < temp1){
-          reporter.reportError ("second literal of array can�t be less than first literal", "", ast.IL2.position);
+          reporter.reportError ("second literal of array can�t be less than first literal", "", ast.IL2.position);
         }
         else if( temp2 == temp1){
           reporter.reportError ("Literals \"%\" can not be equals", ast.IL.spelling+" and "+ast.IL2.spelling, ast.IL2.position);

@@ -35,4 +35,5 @@ public class ForWhileCommand extends Command { // gerald zamora
   public Identifier I;
   public Expression E, E1, E3;
   public Command C, leaveE;
+  public ForVarDeclaration var;
 }
