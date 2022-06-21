@@ -144,7 +144,7 @@ public class TableVisitor implements Visitor {
         }
         return null;
     }
-    // Leonardo
+    // Gerald
     @Override
     public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
         String name = ast.I.spelling;

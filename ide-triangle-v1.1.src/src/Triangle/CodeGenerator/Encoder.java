@@ -54,6 +54,7 @@ public final class Encoder implements Visitor {
   int jumpelseif = -1; 
   ArrayList<Integer> elsif = new ArrayList<Integer>();
   ArrayList<Integer> elsif2 = new ArrayList<Integer>();
+  int jumpelse; 
   public Object visitIfCommand(IfCommand ast, Object o) {
     elsif.clear();
     contador = -1;
@@ -66,34 +67,33 @@ public final class Encoder implements Visitor {
     emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
     ast.C1.visit(this, frame);
     jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    if(elsif.size() == 0)
+        emit(Machine.JUMPop, 0, Machine.CBr, 0);
     
     if(contador == -1){
         patch(jumpifAddr, nextInstrAddr);
         ast.C2.visit(this, frame);
         patch(jumpAddr, nextInstrAddr);
     }else{
-        emit(Machine.JUMPop, 0, Machine.CBr, 0);
-        patch(jumpifAddr, elsif.get(0));
+        patch(jumpifAddr, elsif.get(0)+1);
         
         ast.C2.visit(this, frame);
         
+        patch(elsif.get(0), nextInstrAddr);
         for (int i=1;i<elsif.size();i++) {            
             patch(elsif.get(i), nextInstrAddr);
-        }
-        
-        patch(jumpAddr, nextInstrAddr);    
-        
-        reporter.reportRestriction("ssssss");
-        reporter.reportRestriction(Machine.code.toString());
-    }
+        }        
+    }    
     return null;
   }
 
   @Override
   public Object visitElIfCommand(ElIfCommand ast, Object o) {  
-    if(elsif.size() == 0)
-        elsif.add(nextInstrAddr);
+    if(elsif.size() == 0){   
+        elsif.add(nextInstrAddr); 
+        emit(Machine.JUMPop, 0, Machine.CBr, 0);       
+    }
+    
     Frame frame = (Frame) o;
     int jumpifAddr, jumpAddr;
         
@@ -104,13 +104,14 @@ public final class Encoder implements Visitor {
     jumpAddr = nextInstrAddr;
     emit(Machine.JUMPop, 0, Machine.CBr, 0);
     
-    patch(jumpifAddr, nextInstrAddr);
+    patch(jumpifAddr, nextInstrAddr+1-1);
     
     elsif.add(jumpAddr);
     
     contador = 0;
     return null;
   }
+
 
 
   public Object visitLetCommand(LetCommand ast, Object o) {
@@ -126,14 +127,7 @@ public final class Encoder implements Visitor {
     ast.C1.visit(this, o);
     ast.C2.visit(this, o);
     return null;
-  }
-  //Leonardo
-  public Object visitSequentialCase(SequentialCase ast, Object o) {
-    ast.C1.visit(this, o);
-    ast.C2.visit(this, o);
-    return null;
-  }
-  
+  }  
   public Object visitWhileCommand(WhileCommand ast, Object o) {//Stephanie
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
@@ -167,7 +161,7 @@ public final class Encoder implements Visitor {
       ast.B.visit(this,frame);
     return null;
   }
-
+  //Gerald
   @Override
   public Object visitForVarDeclaration(ForVarDeclaration ast, Object o) {
     Frame frame = (Frame) o;
@@ -206,51 +200,319 @@ public final class Encoder implements Visitor {
     return null;
   }
   
-  //Leonardo--------------------------------------------------------------------------------------------------
+  //Leonardo
+    
+  public boolean expr = false;
+  public ArrayList<Object> litExp = new ArrayList<Object>();
+  
+  // True Int y False Char
+  public boolean tipoExp;
+  public ArrayList<Object> caseArr = new ArrayList<Object>();
+ 
+  public ArrayList<Object> arrOfArr = new ArrayList<Object>();
+  public ArrayList<Integer> jumpToComm = new ArrayList<Integer>();
+  public ArrayList<Integer> jumpToCase = new ArrayList<Integer>();
+  public ArrayList<Integer> jumpToHalt = new ArrayList<Integer>();
+  public Integer checkCase = 0;
+  public Integer checkChos = 0;
+  public Integer checkElse = 0;  
+  public Integer levelChos = 0;
+  
   @Override
   public Object visitCaseLiteral(CaseLiteral ast, Object o) { 
     return null;
   }
   @Override
   public Object visitCase(Case ast, Object o) {
-      
-      
-      
+    caseArr.clear();
+    Frame frame = (Frame) o;    
+    
+    ast.A.visit(this, frame);
+       
+    if(ast.B != null){ 
+        ast.B.visit(this, frame);        
+        if (tipoExp){             
+            Integer firstE = Integer.parseInt(ast.A.spelling); 
+            Integer seconE = Integer.parseInt(ast.B.spelling);
+            while ( firstE <= seconE){
+                caseArr.add(firstE);
+                firstE++;
+            }   
+        }else{            
+            char firstC = (char) ((ast.A.spelling).charAt(1));
+            char seconC = (ast.B.spelling).charAt(1);
+            while ( firstC <= seconC){
+                caseArr.add(firstC);
+                firstC++;
+            }  
+        }        
+    }else{
+        if (tipoExp){             
+            Integer firstE = Integer.parseInt(ast.A.spelling); 
+            caseArr.add(firstE);  
+        }else{            
+            char firstC = (char) ((ast.A.spelling).charAt(1));
+            caseArr.add(firstC); 
+        } 
+    }
+    
+    Object caseArr2 = caseArr.clone();
+    
+    int jumpAddr,jumpAddr2;
+       
+    jumpToCase.add(nextInstrAddr);        
+    emit(Machine.JUMPop, 0, Machine.CBr, 0); 
+    jumpToComm.add(nextInstrAddr);          
+    ast.leaAST.visit(this, frame);             
+    jumpToHalt.add(nextInstrAddr);
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);   
+    
+    Object firstEl;
+   
+    if(tipoExp){
+        IntegerExpression ch = (IntegerExpression) litExp.get(levelChos-1);        
+        firstEl = Integer.parseInt(ch.IL.spelling); 
+    }
+    else{
+        CharacterExpression ch = (CharacterExpression) litExp.get(levelChos-1);
+        firstEl = (char) ((ch.CL.spelling).charAt(1));
+    }
+    
+    caseArr = (ArrayList<Object>)  caseArr2;
+    
+    for (int i=0;i<caseArr.size();i++) {          
+         if(firstEl.equals(caseArr.get(i))){               
+             patch(jumpToCase.get(jumpToCase.size()-1), jumpToComm.get(jumpToComm.size()-1));
+             checkCase++;
+             break;
+         }else{            
+             patch(jumpToCase.get(jumpToCase.size()-1), jumpToHalt.get(jumpToHalt.size()-1)+1); 
+         }
+    }     
+    return null;
+  }
+  public Object visitSequentialCase(SequentialCase ast, Object o) {
+    Frame frame = (Frame) o;  
+    ast.C1.visit(this, frame);
+    ast.C2.visit(this, frame);
     return null;
   }
   @Override
   public Object visitChooseCommand(ChooseCommand ast, Object o) {
-    Frame frame = (Frame) o;  
+    checkChos++;
+        
+    arrOfArr.add((levelChos*4),jumpToComm); //0     
+    arrOfArr.add((levelChos*4)+1,jumpToCase); //1
+    arrOfArr.add((levelChos*4)+2,jumpToHalt); //2 
+    arrOfArr.add((levelChos*4)+3,jumpToHalt); //3 
     
-    int jumpifAddr, jumpAddr;    
+    jumpToComm = new ArrayList<Integer>();
+    jumpToCase = new ArrayList<Integer>();
+    jumpToHalt = new ArrayList<Integer>(); 
+    caseArr = new ArrayList<Object>();
+        
+    if((ast.E.type).equals(StdEnvironment.integerType)){        
+        tipoExp = true;
+    }else{        
+        tipoExp = false;
+    }
     
-    Integer valSize = (Integer) ast.E.visit(this, frame);
-    jumpifAddr = nextInstrAddr;
-    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
+    Frame frame = (Frame) o;          
+     
+    if(tipoExp){
+        IntegerExpression ch = (IntegerExpression) ast.E;
+        litExp.add(ch);
+    }
+    else{
+        CharacterExpression ch = (CharacterExpression) ast.E;
+        litExp.add(ch);
+    } 
     
+    levelChos++;
+    int elseJump;
     
-    ast.B.visit(this, frame);
-    jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    patch(jumpifAddr, nextInstrAddr);
-    
-    if(ast.C != null){ 
-            ast.C.visit(this, frame);
-            patch(jumpAddr, nextInstrAddr);            
+    ast.B.visit(this, frame);      
+                       
+    if(ast.C != null){             
+            ast.C.visit(this, frame);         
+            checkElse++;
+    }else{
+        checkElse--;
     }    
+        
+    for (int i=0;i<jumpToHalt.size();i++) {            
+        patch(jumpToHalt.get(i), nextInstrAddr);
+    }
+
+    levelChos--;
+    
+    jumpToComm = (ArrayList<Integer>) arrOfArr.get((levelChos*4));
+    jumpToCase = (ArrayList<Integer>) arrOfArr.get((levelChos*4)+1);
+    jumpToHalt = (ArrayList<Integer>) arrOfArr.get((levelChos*4)+2);   
+    caseArr    = (ArrayList<Object>)  arrOfArr.get((levelChos*4)+3);  
+        
+    if (levelChos == 0){        
+        if(checkElse != checkChos){
+            if(checkCase != checkChos){
+                if(checkCase+checkElse != checkChos){    
+                    reporter.reportError("Unmatched expression value in choose command", "Choose" ,ast.position);
+                }
+            }
+        }
+        checkCase = 0;
+        checkChos = 0;
+        checkElse = 0;
+        litExp.clear();
+        arrOfArr.clear();
+    }     
     return null;
   }
 
-    //Leonardo---------------------------------------------------------------------------------------------------
+    // Leonardo variables para recursive
+    boolean checkRecursive = false;
+    boolean checkRecursive2 = false;    
+    boolean checkRecursive3 = false; 
+    boolean checkRecursive4 = false;
+    public ArrayList<Integer> jumpToC = new ArrayList<Integer>();
+    int indProc = 0;
+    int jumpToP;
+    //Leonardo
+    
+  public Object visitFuncDeclaration(FuncDeclaration ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr = nextInstrAddr;
+    int argsSize = 0, valSize = 0;
+    if(!checkRecursive){
+        emit(Machine.JUMPop, 0, Machine.CBr, 0);
+        ast.entity = new KnownRoutine(Machine.closureSize, frame.level, nextInstrAddr);
+        writeTableDetails(ast);
+        if (frame.level == Machine.maxRoutineLevel)
+          reporter.reportRestriction("can't nest routines more than 7 deep");
+        else {
+          Frame frame1 = new Frame(frame.level + 1, 0);
+          argsSize = ((Integer) ast.FPS.visit(this, frame1)).intValue();
+          //Frame frame2 = new Frame(frame.level + 1, Machine.linkDataSize);
+          //valSize = ((Integer) ast.E.visit(this, frame2)).intValue();
+        }
+        emit(Machine.RETURNop, valSize, 0, argsSize);
+        patch(jumpAddr, nextInstrAddr);
+    }else if (checkRecursive2){
+          if(indProc == 0){
+              jumpToP = nextInstrAddr;              
+              emit(Machine.JUMPop, 0, Machine.CBr, 0);
+          }          
+          patch(jumpToC.get(indProc)+1,nextInstrAddr);   
+          
+          Frame frame2 = new Frame(frame.level + 1, Machine.linkDataSize);
+          valSize = ((Integer) ast.E.visit(this, frame2)).intValue();
+          
+          int jumpR = nextInstrAddr;
+          emit(Machine.JUMPop, 0, Machine.CBr, 0);
+          patch(jumpR, jumpToC.get(indProc)+2);
+          indProc++;               
+    }else{
+        emit(Machine.JUMPop, 0, Machine.CBr, 0);
+        ast.entity = new KnownRoutine(Machine.closureSize, frame.level, nextInstrAddr);
+        writeTableDetails(ast);
+        if (frame.level == Machine.maxRoutineLevel)
+          reporter.reportRestriction("can't nest routines more than 7 deep");
+        else {
+          Frame frame1 = new Frame(frame.level + 1, 0);
+          argsSize = ((Integer) ast.FPS.visit(this, frame1)).intValue();
+          //Frame frame2 = new Frame(frame.level + 1, Machine.linkDataSize);
+          //valSize = ((Integer) ast.E.visit(this, frame2)).intValue();
+        }
+        jumpToC.add(jumpAddr);
+        emit(Machine.JUMPop, 0, Machine.CBr, 0);
+        
+        emit(Machine.RETURNop, valSize, 0, argsSize);
+        patch(jumpAddr, nextInstrAddr);
+    }
+
+    return new Integer(0);
+  }
+
+  public Object visitProcDeclaration(ProcDeclaration ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr = nextInstrAddr;
+    int argsSize = 0;
+    if(!checkRecursive){
+        emit(Machine.JUMPop, 0, Machine.CBr, 0);
+        ast.entity = new KnownRoutine (Machine.closureSize, frame.level,
+                                    nextInstrAddr);
+        writeTableDetails(ast);
+        if (frame.level == Machine.maxRoutineLevel)
+          reporter.reportRestriction("can't nest routines so deeply");
+        else {
+          Frame frame1 = new Frame(frame.level + 1, 0);
+          argsSize = ((Integer) ast.FPS.visit(this, frame1)).intValue();
+          Frame frame2 = new Frame(frame.level + 1, Machine.linkDataSize);
+          ast.C.visit(this, frame2);
+        }
+        emit(Machine.RETURNop, 0, 0, argsSize);
+        patch(jumpAddr, nextInstrAddr);
+    } else if (checkRecursive2){
+          if(indProc == 0){
+              jumpToP = nextInstrAddr;              
+              emit(Machine.JUMPop, 0, Machine.CBr, 0);
+          }          
+          patch(jumpToC.get(indProc)+1,nextInstrAddr);          
+          Frame frame2 = new Frame(frame.level + 1, Machine.linkDataSize);
+          ast.C.visit(this, frame2);
+          int jumpR = nextInstrAddr;
+          emit(Machine.JUMPop, 0, Machine.CBr, 0);
+          patch(jumpR, jumpToC.get(indProc)+2);
+          indProc++;          
+    }else{
+        emit(Machine.JUMPop, 0, Machine.CBr, 0);
+        ast.entity = new KnownRoutine (Machine.closureSize, frame.level,
+                                    nextInstrAddr);
+        writeTableDetails(ast);
+        if (frame.level == Machine.maxRoutineLevel)
+          reporter.reportRestriction("can't nest routines so deeply");
+        else {
+          Frame frame1 = new Frame(frame.level + 1, 0);
+          argsSize = ((Integer) ast.FPS.visit(this, frame1)).intValue();
+          //Frame frame2 = new Frame(frame.level + 1, Machine.linkDataSize);
+          //ast.C.visit(this, frame2);
+        }
+        jumpToC.add(jumpAddr);
+        emit(Machine.JUMPop, 0, Machine.CBr, 0);
+        
+        emit(Machine.RETURNop, 0, 0, argsSize);
+        patch(jumpAddr, nextInstrAddr);
+    
+    }
+    return new Integer(0);
+  }
+
+  
+    //Leonardo
     @Override
-    public Object visitProcFuncs(ProcFuncs ast, Object obj) {        
-      return(null);
+    public Object visitProcFuncs(ProcFuncs ast, Object o) {  
+      Frame frame = (Frame) o;
+      ast.PF1.visit(this, frame);
+      ast.PF2.visit(this, frame); 
+      return new Integer(0);
     }
 
     //Leonardo
     @Override
-    public Object visitRecursive(Recursive ast, Object obj) {
-      return(null);
+    public Object visitRecursive(Recursive ast, Object o) {
+      indProc = 0;
+      jumpToC.clear();
+      Frame frame = (Frame) o;
+      checkRecursive = true;
+      ast.PF1.visit(this, frame);
+      
+      checkRecursive2 = true;
+      ast.PF1.visit(this, frame);      
+      checkRecursive2 = false;
+      checkRecursive = false;
+      
+      patch(jumpToP, nextInstrAddr);
+      
+      return new Integer(0);
     }  
     
     //Leonardo
@@ -386,49 +648,6 @@ public final class Encoder implements Visitor {
     }
     writeTableDetails(ast);
     return new Integer(extraSize);
-  }
-
-  public Object visitFuncDeclaration(FuncDeclaration ast, Object o) {
-    Frame frame = (Frame) o;
-    int jumpAddr = nextInstrAddr;
-    int argsSize = 0, valSize = 0;
-
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    ast.entity = new KnownRoutine(Machine.closureSize, frame.level, nextInstrAddr);
-    writeTableDetails(ast);
-    if (frame.level == Machine.maxRoutineLevel)
-      reporter.reportRestriction("can't nest routines more than 7 deep");
-    else {
-      Frame frame1 = new Frame(frame.level + 1, 0);
-      argsSize = ((Integer) ast.FPS.visit(this, frame1)).intValue();
-      Frame frame2 = new Frame(frame.level + 1, Machine.linkDataSize);
-      valSize = ((Integer) ast.E.visit(this, frame2)).intValue();
-    }
-    emit(Machine.RETURNop, valSize, 0, argsSize);
-    patch(jumpAddr, nextInstrAddr);
-    return new Integer(0);
-  }
-
-  public Object visitProcDeclaration(ProcDeclaration ast, Object o) {
-    Frame frame = (Frame) o;
-    int jumpAddr = nextInstrAddr;
-    int argsSize = 0;
-
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    ast.entity = new KnownRoutine (Machine.closureSize, frame.level,
-                                nextInstrAddr);
-    writeTableDetails(ast);
-    if (frame.level == Machine.maxRoutineLevel)
-      reporter.reportRestriction("can't nest routines so deeply");
-    else {
-      Frame frame1 = new Frame(frame.level + 1, 0);
-      argsSize = ((Integer) ast.FPS.visit(this, frame1)).intValue();
-      Frame frame2 = new Frame(frame.level + 1, Machine.linkDataSize);
-      ast.C.visit(this, frame2);
-    }
-    emit(Machine.RETURNop, 0, 0, argsSize);
-    patch(jumpAddr, nextInstrAddr);
-    return new Integer(0);
   }
 
   public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
@@ -646,16 +865,29 @@ public final class Encoder implements Visitor {
   public Object visitAnyTypeDenoter(AnyTypeDenoter ast, Object o) {
     return new Integer(0);
   }
-
+  
+  //Leonardo
   public Object visitArrayTypeDenoter(ArrayTypeDenoter ast, Object o) {
     int typeSize;
-    if (ast.entity == null) {
+    if (ast.entity == null && ast.IL2 == null) {
       int elemSize = ((Integer) ast.T.visit(this, null)).intValue();
       typeSize = Integer.parseInt(ast.IL.spelling) * elemSize;
       ast.entity = new TypeRepresentation(typeSize);
       writeTableDetails(ast);
-    } else
+    } 
+    else if(ast.entity == null && ast.IL2 != null){
+      int elemSize = ((Integer) ast.T.visit(this, null)).intValue();
+      typeSize = (Integer.parseInt(ast.IL2.spelling)-Integer.parseInt(ast.IL.spelling)+1) * elemSize;
+      ast.entity = new TypeRepresentation(typeSize);
+      writeTableDetails(ast);
+    }
+    else if(ast.entity != null && ast.IL2 != null){
+      int elemSize = ((Integer) ast.T.visit(this, null)).intValue();
+      typeSize = (Integer.parseInt(ast.IL2.spelling)-Integer.parseInt(ast.IL.spelling)+1) * elemSize;
+    }
+    else {
       typeSize = ast.entity.size;
+    }
     return new Integer(typeSize);
   }
 

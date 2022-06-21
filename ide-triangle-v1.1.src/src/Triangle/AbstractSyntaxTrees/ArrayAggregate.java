@@ -24,4 +24,5 @@ public abstract class ArrayAggregate extends AST {
   }
 
   public int elemCount;
+  public int firstElemCount;
 }
